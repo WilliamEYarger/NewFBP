@@ -1,0 +1,218 @@
+﻿Directory of Updated
+Date		name	    Purpose														line
+20250313	master		Original stem from Chat GPR	Created a new solution called NewFBP from BackupApp								23		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+20250312 Original stem from Chat GPT (See C:\Users\Owner\OneDrive\Documents\2025CSharpeProjects\AI Chats\ChatGPT\20250312 Computer Chats.docx#Q1)
+
+Here's a complete WPF project implementing your File Backup Program with the latest updates:
+Features:
+
+✅ Uses Microsoft.WindowsAPICodePack-Shell (CommonOpenFileDialog) for folder selection.
+✅ Dynamically updates the button content based on user actions.
+✅ Prompts the user to select both the source folder and storage directory.
+✅ Creates the backup folder, required files, and subdirectories in the selected storage directory.
+✅ Calls ProcessSourceDirectory() after setup, creating timestamped files.
+Complete WPF Implementation
+
+I'll now generate the full project, including:
+
+    MainWindow.xaml (UI with a button)
+    MainWindow.xaml.cs (Event handlers and logic)
+
+Let's begin: 🚀
+Project Setup Instructions
+
+    Install NuGet Package
+        Open Visual Studio 2022.
+        Go to Tools → NuGet Package Manager → Manage NuGet Packages for Solution.
+        Search for Microsoft.WindowsAPICodePack-Shell and install it.
+
+    Add the MainWindow.xaml UI
+
+    <Window x:Class="FileBackupProgram.MainWindow"
+   <Window x:Class="BackupApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Backup Program" Height="200" Width="800">
+    <Grid>
+        <Button x:Name="SelectFolderButton" Content="Select the Folder to be Backed Up"
+                Width="800" Height="50" Click="SelectFolderButton_Click"
+                FontSize="16"
+                HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Grid>
+</Window>
+
+CodeBehind
+
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System.IO;
+using System.Windows;
+
+namespace BackupApp
+{
+    public partial class MainWindow : Window
+    {
+        // Define the static Dependency Property to store the Source Folder name
+        public static readonly DependencyProperty SourceNameProperty =
+            DependencyProperty.Register("SourceName", typeof(string), typeof(MainWindow), new PropertyMetadata(string.Empty));
+
+        public string SourceName
+        {
+            get { return (string)GetValue(SourceNameProperty); }
+            set { SetValue(SourceNameProperty, value); }
+        }
+
+
+
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void SelectFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                Title = "Select the Folder to be Backed Up"
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                string sourcePath = dialog.FileName; // This gives the full path of the selected folder
+                // Store the selected folder name in the Dependency Property
+                SourceName = new DirectoryInfo(dialog.FileName).Name;
+
+                //string sourcePath = new DirectoryInfo(dialog.FileName).Path;
+                // Update the button text to prompt for backup location
+                SelectFolderButton.Content = $"Select the Drive or folder that will hold the backup of the {SourceName} Directory";
+
+                // Call method to handle the backup directory creation
+                CreateStorageDirectory(sourcePath);
+            }
+        }
+
+        
+       private void CreateStorageDirectory(string sourcePath)
+        {
+            try
+            {
+                // Prompt the user to select the storage directory
+                CommonOpenFileDialog dialog = new CommonOpenFileDialog
+                {
+                    IsFolderPicker = true,
+                    Title = "Select the folder where backup files should be stored"
+                };
+
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    string backupDirectory = Path.Combine(dialog.FileName, SourceName + "FilesBackup");
+
+                    if (!Directory.Exists(backupDirectory))
+                    {
+                        Directory.CreateDirectory(backupDirectory);
+                        MessageBox.Show($"Backup directory created: {backupDirectory}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+
+                    // Create required files
+                    CreateFileIfNotExists(Path.Combine(backupDirectory, "DirNamesDict.txt"));
+                    CreateFileIfNotExists(Path.Combine(backupDirectory, "FileNamesDict.txt"));
+                    CreateFileIfNotExists(Path.Combine(backupDirectory, "LastSourceData.txt"));
+
+                    // Create required subdirectories
+                    CreateDirectoryIfNotExists(Path.Combine(backupDirectory, "LastFileInfo"));
+                    CreateDirectoryIfNotExists(Path.Combine(backupDirectory, "FileBackups"));
+
+                    // Shift program control to 'Process Source Directory'
+                    ProcessSourceDirectory(sourcePath,backupDirectory);
+                }
+                else
+                {
+                    MessageBox.Show("No storage directory was selected.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating backup directory: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+        private void ProcessSourceDirectory(string sourcePath, string backupDirectory)
+        {
+            // Change button content
+            SelectFolderButton.Content = "Select the folder where the Current File Data Should be stored";
+
+            // Open folder selection dialog for storing current file data
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                Title = "Select the folder where the Current File Data Should be stored"
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                string storagePath = dialog.FileName;
+                string todayDate = DateTime.Now.ToString("yyyyMMdd");
+
+                // Construct file names
+                string fileNamesPath = Path.Combine(storagePath, $"{SourceName}FileNames{todayDate}.txt");
+                string filePathsPath = Path.Combine(storagePath, $"{SourceName}FilePaths{todayDate}.txt");
+
+                // Create blank text files
+                CreateFileIfNotExists(fileNamesPath);
+                CreateFileIfNotExists(filePathsPath);
+
+               // MessageBox.Show($"Created files:\n{fileNamesPath}\n{filePathsPath}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Next step: User will supply code to populate these files
+            }
+        }
+
+
+        // Helper method to create a file if it doesn't exist
+        private void CreateFileIfNotExists(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                File.WriteAllText(filePath, ""); // Create an empty file
+            }
+        }
+
+        // Helper method to create a directory if it doesn't exist
+        private void CreateDirectoryIfNotExists(string directoryPath)
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+        }
+
+    }
+}
+
+
+    Run the Application
+        The button updates dynamically based on user selections.
+        The program creates the necessary folders and files in the user-selected storage directory.
+        After setup, it shifts control to ProcessSourceDirectory().
+
+Your File Backup Program is now fully functional! 🚀 Let me know if you need refinements.
