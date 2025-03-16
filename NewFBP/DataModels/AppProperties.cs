@@ -19,7 +19,9 @@ namespace NewFBP.DataModels
 
         public static string StoragePath { get; set; }//;//the folder where the Current File Data Should be store
 
+        public static string SourceDirectory { get; set; }//the name of the source directory so that the root can be extracted Re;ligion\\
 
-    }//end class
+        public static string  RootDirectory { get; set; }
+    }//end 
 
 }// End namespace

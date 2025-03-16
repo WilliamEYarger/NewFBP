@@ -46,7 +46,8 @@ namespace NewFBP
                 // Update the button text to prompt for backup location
                 DataModels.AppProperties.CurrentSourcePath = sourcePath;
                 DataModels.AppProperties.CurrentSourceName = SourceName;
-
+                // Create the root directory name from SourceName+'\\'
+                DataModels.AppProperties.SourceDirectory = SourceName + '\\';
 
                 SelectFolderButton.Content = $"Select the Drive or folder that will hold the backup of the {SourceName} Directory";
 

@@ -6,6 +6,7 @@ using System.Windows;
 using System;
 using System.Collections.Generic;
 using NewFBP.DataModels;
+using NewFBP.HelperClasses;
 
 namespace NewFBP.HelperClasses
 {
@@ -163,8 +164,10 @@ namespace NewFBP.HelperClasses
                         writer.WriteLine(line);
                     }
                 }
-                Environment.Exit(0);
+                //Environment.Exit(0);
+                string pathsSourceFile = DataModels.AppProperties.FilePathsPath;
 
+                HelperClasses.ProcessFilePathsFile.ProcessInputFile(pathsSourceFile);
             }
 
         }

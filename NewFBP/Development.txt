@@ -1,7 +1,7 @@
 ﻿Directory of Updated
 Date		name	    Purpose														line
 20250313	master		Original stem from Chat GPR	Created a new solution called NewFBP from BackupApp								23		
-
+20250316    Branch 2.ProcessFilePathsFile 
 
 
 
@@ -216,3 +216,8 @@ namespace BackupApp
         After setup, it shifts control to ProcessSourceDirectory().
 
 Your File Backup Program is now fully functional! 🚀 Let me know if you need refinements.
+
+Branch 2.ProcessFilePathsFile 
+was committed and pushed on an unknowd date 
+A new commit which added the string helper class and changed the logic for getting the root file was
+committed on 20250316
