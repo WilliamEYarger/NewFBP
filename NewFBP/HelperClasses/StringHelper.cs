@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace NewFBP.HelperClasses
 {
@@ -194,6 +195,27 @@ namespace NewFBP.HelperClasses
         }
 
         #endregion RemoveFirstItem
+
+
+        #region ConvertToBase2
+        public static string ConvertToBase26(int number)
+        {
+            if (number < 0 || number > 17575)
+                throw new ArgumentException("Number must be between 0 and 17575 to fit in three characters.");
+
+            StringBuilder result = new StringBuilder();
+            while (number > 0 || result.Length < 3)
+            {
+                int remainder = number % 26;
+                char digit = (char)('A' + remainder); // Convert remainder to letter
+                result.Insert(0, digit);
+                number /= 26;
+            }
+
+            return result.ToString();
+        }// end ConvertToBase26 ConvertToBase2
+
+        #endregion
 
     }// End Class
 

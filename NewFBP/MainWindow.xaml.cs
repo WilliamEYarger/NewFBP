@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using NewFBP.DataModels;
 using NewFBP.HelperClasses;
+using System.Printing;
 
 
 namespace NewFBP
@@ -39,15 +40,38 @@ namespace NewFBP
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                string sourcePath = dialog.FileName; // This gives the full path of the selected folder
+                //Tne sourcePath is the full path of the selected folder
+                //"C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion
+                string sourcePath = dialog.FileName;
+
                 // Store the selected folder name in the Dependency Property
+                //"Religion"
                 SourceName = new DirectoryInfo(dialog.FileName).Name;
-                //string sourcePath = new DirectoryInfo(dialog.FileName).Path;
-                // Update the button text to prompt for backup location
+
+                /*The SourceRootDirectory is the string up to, but not including the SourceName
+                 * When the Dictionary of Directory names is created it will be used
+                 * so that the properties of a directorr in the source can be compared to 
+                 * a directory in the storage site.
+                 * For example if the source directory path is "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion"
+                 * and I want to compare it to the directory whose path is "D:\\ReligionBackup\\DirNamesDict\\Religion" they 
+                 * can only be compared if I strip off the roots
+                 */
+                string currentSourcePath = sourcePath.Replace(SourceName, "");
+                DataModels.AppProperties.SourceRootDirectory = currentSourcePath;
+
+                // Store the complete path to the source directory
                 DataModels.AppProperties.CurrentSourcePath = sourcePath;
+
+                //store the Name of the current source directory
                 DataModels.AppProperties.CurrentSourceName = SourceName;
+
                 // Create the root directory name from SourceName+'\\'
-                DataModels.AppProperties.SourceDirectory = SourceName + '\\';
+                string currentSourceName = SourceName ;
+                DataModels.AppProperties.SourceDirectory = currentSourceName;
+                //string currentSourcePath = DataModels.AppProperties.CurrentSourcePath;
+                //DataModels.AppProperties.SourceRootDirectory = currentSourceDirectorhy;
+
+
 
                 SelectFolderButton.Content = $"Select the Drive or folder that will hold the backup of the {SourceName} Directory";
 
@@ -76,13 +100,13 @@ namespace NewFBP
                     if (!Directory.Exists(backupDirectory))
                     {
                         Directory.CreateDirectory(backupDirectory);
-                        MessageBox.Show($"Backup directory created: {backupDirectory}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        //MessageBox.Show($"Backup directory created: {backupDirectory}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
 
                     // Create required files
                     CreateFileIfNotExists(Path.Combine(backupDirectory, "DirNamesDict.txt"));
                     CreateFileIfNotExists(Path.Combine(backupDirectory, "FileNamesDict.txt"));
-                    CreateFileIfNotExists(Path.Combine(backupDirectory, "LastSourceData.txt"));
+                    CreateFileIfNotExists(Path.Combine(backupDirectory, "FileInfoDict.txt"));
 
                     // Create required subdirectories
                     CreateDirectoryIfNotExists(Path.Combine(backupDirectory, "LastFileInfo"));

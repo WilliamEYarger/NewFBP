@@ -87,6 +87,7 @@ namespace NewFBP.HelperClasses
                         writer.WriteLine(line);
                     }
                 }
+                
                 //Application.Exit;
             }
 
