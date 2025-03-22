@@ -12,9 +12,9 @@ namespace NewFBP.HelperClasses
 
 
     public static class GetfileNamesAndPaths
-
-
     {
+        #region properties
+
         //Lists
         private static List<string> FolderPathList = new List<string>();
         private static List<string> FileNameList = new List<string>();
@@ -49,7 +49,7 @@ namespace NewFBP.HelperClasses
         /* Create an arrray of strings DitIdB26Name that will hold all of the DirId.FileName(B26) in the
          * sane order as the files in the FileNamesDict*/
         private static string[] DictIdB26NameArr = new string [0];
-
+        //  CHANGE INSTRUCTIONS creat a list 'DictIdB26NameList' of the above first so i can add to it as I iterate through the various files
         /*Create a List and arrray of strings B26NameArr that will hold all of the B26 file names in seriatem order */
         private static List<string> B26NameList = new List<string>();
         private static string[] B26NameArr = new string [0];
@@ -66,11 +66,12 @@ namespace NewFBP.HelperClasses
 
         private static Dictionary<string, string> oldDirNamesDict = new Dictionary<string, string>();
         private static Dictionary<string, string> oldFileNamesDict = new Dictionary<string, string>();
+        #endregion properties
+
 
         public static void ProcessSourceFiles()
         {
             #region Set up local variables
-            #region general variables
             //get the current value of the dirCntr and fileCntr if they exist
             dirCntr = DataModels.AppProperties.DirCntr;
             fileCntr = DataModels.AppProperties.FileCntr;
@@ -94,6 +95,24 @@ namespace NewFBP.HelperClasses
 
             //create a string array of combinedDirList so that you can interate thru it to create DirNamesDict
             string[] combinedDirArr = combinedDirList.ToArray();
+
+            //Create a list that contains all files using combinedDirArr
+            List<string> listOfAllFiles = new List<string>();
+            string currentDirectory;
+            List<string> allFilePathsList = new List<string>();
+            List<string> currentDirectoriesFilesList = new List<string>();
+            
+            int arrayLength = combinedDirArr.Length;
+
+            for (int i = 0; i < arrayLength; i++)
+            {
+                currentDirectory = combinedDirArr[i];
+
+                currentDirectoriesFilesList = Directory.GetFiles(currentDirectory).ToList();
+                allFilePathsList.AddRange(currentDirectoriesFilesList);
+            }
+
+            string stophere = "";
 
             //Get the old DirNamesDict if it exists
             oldDirNamesDict = DataModels.AppProperties.OldDirNamesDict;
@@ -128,10 +147,7 @@ namespace NewFBP.HelperClasses
             string FileNameDictKey = "";
             string FileNameDictValue = "";
 
-
-            #endregion general variables
-
-            #endregion  Set up local variables
+            #endregion local variables related to files
 
             #region Create DirNamesDict
 
@@ -161,12 +177,11 @@ namespace NewFBP.HelperClasses
                 }
             }//end for (int i = 0; i<combinedDirArr.Length; i++)
 
-           // string Stop = "";
+            // string Stop = "";
             #endregion Create DirNamesDict
 
 
-            
-            #region Create File related Dictionaries
+            #region Create discription of File related Dictionaries
 
             /* to process the files in the selected directory
              * 1.   I will need the following dictionaries
@@ -193,20 +208,30 @@ namespace NewFBP.HelperClasses
              *      d.  CurrentVersionDict  NOT DONE
              */
 
+                #endregion Create discription of File related Dictionaries
+                // Get all the files in these folders
 
-            // Get all the files in these folders
+                #region Create FileNamesDict 
 
-            #region Create FileNamesDict 
-
-            if (DataModels.AppProperties.OldFileNamesDict != null)
+                if (DataModels.AppProperties.OldFileNamesDict != null)
             { FileNamesDict = DataModels.AppProperties.OldFileNamesDict; }
             else
             { FileNamesDict = new Dictionary<string, string>(); }
 
+            // new method to create an array that holds the root (CurrentSourcePath) dire and all of the folders in it
+
+            // get the sourch directory
+            string sourcePath = DataModels.AppProperties.CurrentSourcePath;
+
+           
+
+            string stop = "";
+
+
 
             foreach (string s in combinedDirList)
             {
-
+                //pocess each folder in the root directory
                 if (!string.IsNullOrEmpty(s))
                 {
                     //Get  the file paths of all the files in the current 's' directory
@@ -220,10 +245,12 @@ namespace NewFBP.HelperClasses
                     foreach (string currentFilePath in filePathsList)
                     {                        
                         //save the path to the current file so it can be fetched for processing
-                        currentFilesPath = currentFilePath;
+                        currentFilesPath = currentFilePath; //ERROR THID ID NOT USED
                         //get the file variables for this file path
                         string[] fileVariables = GetFileVariables(currentFilePath);
+                        //The name of the current file in currentFlePath
                         currentFileName = fileVariables[0];
+                        //the folder being processed (Religion\)
                         currentFileAbbreviatdDirectoryName = fileVariables[1];
 
                         // get currentDirectoryIntName
@@ -231,6 +258,7 @@ namespace NewFBP.HelperClasses
                         //if it does then get if value, its file number converted to a string
                         if (DirNamesDict.ContainsKey(currentFileAbbreviatdDirectoryName))
                         {
+                            //the string representation of the int which reflects this direcotry in all directory 
                             currentDirectoryIntName = DirNamesDict[currentFileAbbreviatdDirectoryName];
                         }
                         else
@@ -241,15 +269,14 @@ namespace NewFBP.HelperClasses
                         // get currentFileLengthStr
                         FileInfo fileInfo = new FileInfo(currentFilePath);
 
-                        //long fileSize = fileInfo.Length; // Size in bytes 
+                        //a string representing the size of the current file  
                         currentFileLengthStr = fileInfo.Length.ToString();
 
-                        // create the Key value of the FileNameDict, DirNameInt.currentFileName
+                        // create the Key value of the FileNameDict, DirNameInt.currentFileName ie "0.Articles List.docx"
                         FileNameDictKey = currentDirectoryIntName + '.' + currentFileName;
 
+                        //CHANG INSTRUCTION add the above value to DictIdB26NameList
 
-                        //I AM TEMPORARLY COMMENTING THIS SECTION TO SEE IF IT IS NEEDED WITH REVISIONS WHEN I TRY TO PROCESS A NEW
-                        //SOURCE DIRECTORY THAT HAS A FILE ADDED IN AN OLD DIRECTORY THAT WAS NOT PRESENT WHEN THE PROGRAM WAS LAST RUN
                         // if the FileNameDict  contains this key then get its value else creat a new entry
                         //with with key and the current value of FileCntr converted to Base26
                         if (FileNamesDict.ContainsKey(FileNameDictKey))
@@ -268,11 +295,15 @@ namespace NewFBP.HelperClasses
                             B26NameList.Add(FileNameDictValue);
                             fileCntr++;
                         }
+                        //filePathsList = filePathsList;
 
                     }//end  foreach(string currentFilePath in filePathsList)
+                    string test = " see if it gets the next directory";
 
+                    //string test = " test B26NameList";
                 }//end if (!string.IsNullOrEmpty
 
+                combinedDirList = combinedDirList;
             }//end foreadch (string s
 
 
@@ -287,7 +318,25 @@ namespace NewFBP.HelperClasses
             //CREATE B26NameArr
             string[] B26NameArr = FileNamesDict.Values.ToArray();
 
-            string Stop = "";
+            
+
+            //CREATE FileInfoDict . { ACR, 81351}
+            //[Base26File#,Length]*
+            //cycle thru combinedDirArr getting file paths and getting their length
+            //int listCntr = 0;
+            //foreach (string path in FilePathList)
+            //{
+            //    if (File.Exists(path))
+            //    {
+            //        FileInfo fileInfo = new FileInfo(path);
+            //        string size = fileInfo.Length.ToString();
+            //        FileInfoDict.Add(B26NameArr[listCntr], size);
+            //        listCntr++;
+            //    }
+            //}
+
+
+            //string Stop = "";
             #endregion Create FileNamesDict
 
             //string stop = "Stop here";
@@ -302,40 +351,36 @@ namespace NewFBP.HelperClasses
             string[] combinedDirListArray = combinedDirList.ToArray();
 
 
-           // var keyValueList = new List<KeyValuePair<string, int>>(FileNamesDict);
+                // var keyValueList = new List<KeyValuePair<string, int>>(FileNamesDict);
 
-            /*I NEED SOMEWAY TO HAVE ARRAYS OF STIRNGS THAT CONTAIN THE FILEPATHS OF ALL FILES , THIR BASE26 NAME 
-             * AND THEIR DIRECTORY'S ABBREVIATED NAME*/
-
-
+                /*I NEED SOMEWAY TO HAVE ARRAYS OF STIRNGS THAT CONTAIN THE FILEPATHS OF ALL FILES , THIR BASE26 NAME 
+                 * AND THEIR DIRECTORY'S ABBREVIATED NAME*/
 
 
-            foreach (string filePath in combinedDirList)
-            {
-                ////get this file's Base26File#
-                //Create a private Method to get the current file Paths various variabes
-                //string fileNameB26 = HelperClasses.StringHelper.ConvertToBase26(fileCntr);
-                //fileCntr++;
 
 
-            }
+                foreach (string filePath in combinedDirList)
+                {
+                    ////get this file's Base26File#
+                    //Create a private Method to get the current file Paths various variabes
+                    //string fileNameB26 = HelperClasses.StringHelper.ConvertToBase26(fileCntr);
+                    //fileCntr++;
+
+
+                }
 
 
             //string z = "Stop Here";
             #endregion FileInfoDict
 
-            //Create FileNamesDict
+        }//end  public static void ProcessSourceFiles()
 
-
-        }//end processfiles
-
+        #region ListFoldersAndFiles
         private static void ListFoldersAndFiles(string selectedFolder)
         {
             //List<string> FolderPathList = new List<string>();
             // List<string> FilePathList = new List<string>();
             //List<string> FileNameList = new List<string>();
-
-
 
             try
             {
@@ -409,10 +454,10 @@ namespace NewFBP.HelperClasses
 
                 //HelperClasses.ProcessFilePathsFile.ProcessInputFile(pathsSourceFile);
             }
-            #endregion Create File related Dictionaries
         }// end ListFoldersAnd Files
+        #endregion ListFoldersAndFiles
 
-
+        #region GetFileVariables
         private static string[] GetFileVariables(string filePath)
         {
             string[] FileVariables = new string[2];
@@ -431,11 +476,9 @@ namespace NewFBP.HelperClasses
 
 
             return FileVariables;
-        }//end namespace
-
+        }//end method private static string[] GetFileVariables(string filePath)
+        #endregion GetFileVariables
 
     }//end public static class GetfileNamesAndPaths
-
-
 
 }// end namespace

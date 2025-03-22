@@ -3,6 +3,8 @@ Date		name	    Purpose														line
 20250313	master		Original stem from Chat GPR	Created a new solution called NewFBP from BackupApp								23		
 20250316    Branch 2.ProcessFilePathsFile Location line 220
 20250320    3.NewOutputSite branch created at line 223
+2025022     3.NewOutputSite branch updated to create allFilePathsList (which contains the paths of all files) and 
+            combinedDirArr (contains the paths to all the directories) 
 
 
 
