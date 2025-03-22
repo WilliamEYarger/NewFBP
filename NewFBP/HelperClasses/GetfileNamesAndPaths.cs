@@ -276,7 +276,7 @@ namespace NewFBP.HelperClasses
             }//end foreadch (string s
 
 
-            string Stop = "";
+           // string Stop = "";
 
             //The items in FileNamesDict have FolderId (an int to string)+'.'+FileName as a Key
             //The items in FileNamesDict have FileBase26 name as a Value
@@ -287,7 +287,7 @@ namespace NewFBP.HelperClasses
             //CREATE B26NameArr
             string[] B26NameArr = FileNamesDict.Values.ToArray();
 
-
+            string Stop = "";
             #endregion Create FileNamesDict
 
             //string stop = "Stop here";
