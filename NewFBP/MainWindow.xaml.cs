@@ -32,6 +32,8 @@ namespace NewFBP
 
         private void SelectFolderButton_Click(object sender, RoutedEventArgs e)
         {
+          
+
             CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
                 IsFolderPicker = true,
@@ -56,8 +58,8 @@ namespace NewFBP
                  * and I want to compare it to the directory whose path is "D:\\ReligionBackup\\DirNamesDict\\Religion" they 
                  * can only be compared if I strip off the roots
                  */
-                string currentSourcePath = sourcePath.Replace(SourceName, "");
-                DataModels.AppProperties.SourceRootDirectory = currentSourcePath;
+                string sourceRootDirectory = sourcePath.Replace(SourceName, "");
+                DataModels.AppProperties.RootDirectory = sourceRootDirectory;
 
                 // Store the complete path to the source directory
                 DataModels.AppProperties.CurrentSourcePath = sourcePath;
@@ -68,102 +70,198 @@ namespace NewFBP
                 // Create the root directory name from SourceName+'\\'
                 string currentSourceName = SourceName ;
                 DataModels.AppProperties.SourceDirectory = currentSourceName;
-                //string currentSourcePath = DataModels.AppProperties.CurrentSourcePath;
-                //DataModels.AppProperties.SourceRootDirectory = currentSourceDirectorhy;
 
+                /*Create a path to a storage directory from the sourceRootDirectory and the SourceName+"Backup"
+                 * check to see if it exists and if it doesn't create it.
+                 * 
+                 */
+                string sourceBackupDirPath = sourceRootDirectory+SourceName + "Backup";
 
-
-                SelectFolderButton.Content = $"Select the Drive or folder that will hold the backup of the {SourceName} Directory";
-
-                // Call method to handle the backup directory creation
-                CreateStorageDirectory(sourcePath);
-            }
-
-        }
-
-
-        private void CreateStorageDirectory(string sourcePath)
-        {
-            try
-            {
-                // Prompt the user to select the storage directory
-                CommonOpenFileDialog dialog = new CommonOpenFileDialog
+                // Check if the directory exists
+                if (!Directory.Exists(sourceBackupDirPath))
                 {
-                    IsFolderPicker = true,
-                    Title = "Select the folder where backup files should be stored"
-                };
-
-                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                {
-                    string backupDirectory = Path.Combine(dialog.FileName, SourceName + "FilesBackup");
-
-                    if (!Directory.Exists(backupDirectory))
-                    {
-                        Directory.CreateDirectory(backupDirectory);
-                        //MessageBox.Show($"Backup directory created: {backupDirectory}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-
-                    // Create required files
-                    CreateFileIfNotExists(Path.Combine(backupDirectory, "DirNamesDict.txt"));
-                    CreateFileIfNotExists(Path.Combine(backupDirectory, "FileNamesDict.txt"));
-                    CreateFileIfNotExists(Path.Combine(backupDirectory, "FileInfoDict.txt"));
-
-                    // Create required subdirectories
-                    CreateDirectoryIfNotExists(Path.Combine(backupDirectory, "LastFileInfo"));
-                    CreateDirectoryIfNotExists(Path.Combine(backupDirectory, "FileBackups"));
-
-                    // Shift program control to 'Process Source Directory'
-                    ProcessSourceDirectory(sourcePath, backupDirectory);
+                    // Create the directory if it does not exist
+                    Directory.CreateDirectory(sourceBackupDirPath);
                 }
                 else
-                {
-                    MessageBox.Show("No storage directory was selected.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error creating backup directory: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
+                { // Get all of the old files
+
+                    #region Get the DirCntr and FileCntr
+                    // Get the DirCntr and FileCntr
+                    string filePath = sourceBackupDirPath + '.' + "CurrentCntrValues.txt";
+
+                    string[] currentCntrValues;
+
+                    if (File.Exists(filePath))
+                    {
+                        currentCntrValues = File.ReadAllLines(filePath);
+
+                        //get the string value of the DirCntr and convert into an int Dirvalue
+
+                        string numberString = currentCntrValues[0];
+                        if (int.TryParse(numberString, out int number))
+                        {
+                            DataModels.AppProperties.DirCntr = number;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Invalid number format.");
+                        }
+
+                        //get the string value of the FileCntr and convert into an int FileCntr
+
+                        numberString = currentCntrValues[1];
+                        if (int.TryParse(numberString, out int fileNumber))
+                        {
+                            DataModels.AppProperties.DirCntr = fileNumber;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Invalid number format.");
+                        }
+
+                        #endregion et the DirCntr and FileCntr
+
+                    #region get OldDirNamesDict
+                        // get OldDirNamesDict
+                        filePath = sourceBackupDirPath + '.' + "CurrentDirNamesDict.txt";
+                        //create a string array to hold the lines of the "CurrentDirNamesDict.txt file
+                        string[] currentDirNamesDict;
+
+                        //create a dictionary to hold the Keyvalue pairs of OldDirNamesDict
+                        Dictionary<string, string> OldDirNamesDict = new Dictionary<string, string>();
+
+                        // see if filePath file exists and if it does get it else create a new OldDirNamesDict
+                        if (File.Exists(filePath))
+                        {
+                            string[] currentDirNamesDictArr = File.ReadAllLines(filePath);
+
+                            //cycle thru currentDirNamesDictArr and create OldDirNamesDict
+                            for (int i = 0; i < currentDirNamesDictArr.Length; i++)
+                            {
+                                string[] KeyValuePairArr = currentDirNamesDictArr[i].Split('~');
+                                OldDirNamesDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
+                            }
+                            DataModels.AppProperties.OldDirNamesDict = OldDirNamesDict;
+                        }
+                        #endregion get OldDirNamesDict
+
+                    #region get OldFileNamesDict
+
+                        // get OldDirNamesDict
+                        filePath = sourceBackupDirPath + '.' + "CurrentFileNamesDict.txt";
+                        //create a string array to hold the lines of the "CurrentFileNamesDict.txt file
+                        string[] currentFileNamesDict;
+
+                        //create a dictionary to hold the Keyvalue pairs of OldFileNamesDict
+                        Dictionary<string, string> OldFileNamesDict = new Dictionary<string, string>();
+
+                        // see if filePath file exists and if it does get it else create a new OldFileNamesDict
+                        if (File.Exists(filePath))
+                        {
+                            string[] currentFileNamesDictArr = File.ReadAllLines(filePath);
+
+                            //cycle thru currentFileNamesDictArr and create OldFileNamesDict
+                            for (int i = 0; i < currentFileNamesDictArr.Length; i++)
+                            {
+                                string[] KeyValuePairArr = currentFileNamesDictArr[i].Split('~');
+                                OldFileNamesDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
+                            }
+                            DataModels.AppProperties.OldFileNamesDict = OldFileNamesDict;
+                        }
+                        #endregion get OldFileNamesDict
+
+                    #region get FileInfoDict
+                        // get OldFileInfoDict
+                        filePath = sourceBackupDirPath + '.' + "CurrentFileInfoDict.txt";
+                        //create a string array to hold the lines of the "CurrentFileInfoDict.txt file
+                        string[] currentFileInfoDict;
+
+                        //create a dictionary to hold the Keyvalue pairs of OldFileInfoDict
+                        Dictionary<string, string> OldFileInfoDict = new Dictionary<string, string>();
+
+                        // see if filePath file exists and if it does get it else create a new OldFileInfoDict
+                        if (File.Exists(filePath))
+                        {
+                            string[] currentFileInfoDictArr = File.ReadAllLines(filePath);
+
+                            //cycle thru currentFileInfoDictArr and create OldFileInfoDict
+                            for (int i = 0; i < currentFileInfoDictArr.Length; i++)
+                            {
+                                string[] KeyValuePairArr = currentFileInfoDictArr[i].Split('~');
+                                OldFileInfoDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
+                            }
+                            DataModels.AppProperties.OldFileInfoDict = OldFileInfoDict;
+                        }
+
+                        #endregion FileInfoDict
+
+                    #region get FileFetchDict
+
+                        // get OldFileFetchDict
+                        filePath = sourceBackupDirPath + '.' + "CurrentFileFetchDict.txt";
+                        //create a string array to hold the lines of the "CurrentFileFetchDict.txt file
+                        string[] currentFileFetchDict;
+
+                        //create a dictionary to hold the Keyvalue pairs of OldFileFetchDict
+                        Dictionary<string, string> OldFileFetchDict = new Dictionary<string, string>();
+
+                        // see if filePath file exists and if it does get it else create a new OldFileFetchDict
+                        if (File.Exists(filePath))
+                        {
+                            string[] currentFileFetchDictArr = File.ReadAllLines(filePath);
+
+                            //cycle thru currentFileFetchDictArr and create OldFileFetchDict
+                            for (int i = 0; i < currentFileFetchDictArr.Length; i++)
+                            {
+                                string[] KeyValuePairArr = currentFileFetchDictArr[i].Split('~');
+                                OldFileFetchDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
+                            }
+                            DataModels.AppProperties.OldFileFetchDict = OldFileFetchDict;
+                        }
+
+                        #endregion FileFetchDict
+
+                    #region get CurrentVersionDict
 
 
-        private void ProcessSourceDirectory(string sourcePath, string backupDirectory)
-        {
-            // Change button content
-            SelectFolderButton.Content = "Select the folder where the Current File Data Should be stored";
+                        // get OldCurrentVersionDict
+                        filePath = sourceBackupDirPath + '.' + "CurrentCurrentVersionDict.txt";
+                        //create a string array to hold the lines of the "CurrentCurrentVersionDict.txt file
+                        string[] currentCurrentVersionDict;
 
-            // Open folder selection dialog for storing current file data
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog
-            {
-                IsFolderPicker = true,
-                Title = "Select the folder where the Current File Data Should be stored"
-            };
+                        //create a dictionary to hold the Keyvalue pairs of OldCurrentVersionDict
+                        Dictionary<string, string> OldCurrentVersionDict = new Dictionary<string, string>();
 
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                string storagePath = dialog.FileName;
-                DataModels.AppProperties.StoragePath = storagePath;//the folder where the Current File Data Should be stored
+                        // see if filePath file exists and if it does get it else create a new OldCurrentVersionDict
+                        if (File.Exists(filePath))
+                        {
+                            string[] currentCurrentVersionDictArr = File.ReadAllLines(filePath);
 
-
-                string todayDate = DateTime.Now.ToString("yyyyMMdd");
-
-                // Construct file names
-                string fileNamesPath = Path.Combine(storagePath, $"{SourceName}FileNames{todayDate}.txt");
-                DataModels.AppProperties.FileNamesPath = fileNamesPath;
-                string filePathsPath = Path.Combine(storagePath, $"{SourceName}FilePaths{todayDate}.txt");
-                DataModels.AppProperties.FilePathsPath = filePathsPath;
+                            //cycle thru currentCurrentVersionDictArr and create OldCurrentVersionDict
+                            for (int i = 0; i < currentCurrentVersionDictArr.Length; i++)
+                            {
+                                string[] KeyValuePairArr = currentCurrentVersionDictArr[i].Split('~');
+                                OldCurrentVersionDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
+                            }
+                            DataModels.AppProperties.OldCurrentVersionDict = OldCurrentVersionDict;
+                        }
+                        #endregion  CurrentVersionDict
 
 
-                // Create blank text files
-                CreateFileIfNotExists(fileNamesPath);
-                CreateFileIfNotExists(filePathsPath);
+                       
 
-                // call HelperClasses.GetfileNamesAndPaths to process the files
+                    }// end if file Exists sourceBackupDirPath + '.' + "CurrentCntrValues.txt"
+                }// end if (!Directory.Exists(sourceBackupDirPath))
+                              
+
                 GetfileNamesAndPaths.ProcessSourceFiles();
+            }// end show dialog
 
-            }
-        }
+        }// end SelectfolderButton_Click
 
+
+      
 
         // Helper method to create a file if it doesn't exist
         private void CreateFileIfNotExists(string filePath)

@@ -2,8 +2,7 @@
 Date		name	    Purpose														line
 20250313	master		Original stem from Chat GPR	Created a new solution called NewFBP from BackupApp								23		
 20250316    Branch 2.ProcessFilePathsFile Location line 220
-
-
+20250320    3.NewOutputSite branch created at line 223
 
 
 
@@ -221,3 +220,11 @@ Branch 2.ProcessFilePathsFile
 was committed and pushed on an unknowd date 
 A new commit which added the string helper class and changed the logic for getting the root file was
 committed on 20250316
+Create 3.NewOutputSite branch
+Step 1. remove all references to the FileNames file and remove thd date from the FilePathsPath Done
+Step 2. determine what dictinaries are needed to deal with the files in the source directoru
+                1.  
+Step 3. determine what files will be stored in the SourceBackup folder:
+                1. old DirNamesDic 
+                2. old FileNamesDict
+                3. old FileInfoDict

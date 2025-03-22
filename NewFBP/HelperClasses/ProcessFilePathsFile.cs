@@ -8,20 +8,18 @@ namespace NewFBP.HelperClasses
 {
     public static class ProcessFilePathsFile
     {
-        public static Dictionary<string, string> DirNamesDict { get; private set; }
-        public static Dictionary<string, string> FileNamesDict { get; private set; }
-        public static Dictionary<string, string> FileInfoDict { get; private set; }
+        //public static Dictionary<string, string> DirNamesDict { get; private set; }
+        //public static Dictionary<string, string> FileNamesDict { get; private set; }
+        //public static Dictionary<string, string> FileInfoDict { get; private set; }
         private static string RootPath;
         private static int DirCntr;
         private static int FileCntr;
-        
-        public static void ProcessInputFile(string inputFilePath)
+        private static Dictionary<string, string> DirNamesDict = new Dictionary<string, string>();
+        private static Dictionary<string, string> FileNamesDict = new Dictionary<string, string>();
+        private static Dictionary<string, string> FileInfoDict = new Dictionary<string, string>();
+        private static void ProcessInputFile(string inputFilePath)
         {
-            DirNamesDict = new Dictionary<string, string>();
-            FileNamesDict = new Dictionary<string, string>();
-            FileInfoDict = new Dictionary<string,string>();
-            DirCntr = 0;
-            FileCntr = 0;
+           
 
             string[] lines = File.ReadAllLines(inputFilePath);
 
