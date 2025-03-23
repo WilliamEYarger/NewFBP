@@ -142,7 +142,7 @@ namespace NewFBP
                                 string[] KeyValuePairArr = currentDirNamesDictArr[i].Split('~');
                                 OldDirNamesDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
                             }
-                            DataModels.AppProperties.OldDirNamesDict = OldDirNamesDict;
+                            DataModels.AppProperties.DirNamesDict = OldDirNamesDict;
                         }
                         #endregion get OldDirNamesDict
 

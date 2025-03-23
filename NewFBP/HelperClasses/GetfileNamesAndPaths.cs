@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
 
 namespace NewFBP.HelperClasses
@@ -62,20 +63,256 @@ namespace NewFBP.HelperClasses
 
         private static List<string> FilePathsList = new List<string>();
         private static string[] FilePathsArr = new string [0];
-
-
-        private static Dictionary<string, string> oldDirNamesDict = new Dictionary<string, string>();
+        private static string currentFilesPath = "";
+        private static Dictionary<string, string> currentDirNamesDict = new Dictionary<string, string>();
         private static Dictionary<string, string> oldFileNamesDict = new Dictionary<string, string>();
         #endregion properties
 
 
         public static void ProcessSourceFiles()
         {
-            #region Set up local variables
+
             //get the current value of the dirCntr and fileCntr if they exist
             dirCntr = DataModels.AppProperties.DirCntr;
             fileCntr = DataModels.AppProperties.FileCntr;
 
+            CreateCombinrDirList();
+
+            CreateListOfAllFiles();
+
+
+            //Create private static void CreateDirNamesDict() {}
+            CreateDirNamesDict();
+
+            //Create private static voide Create B26NameList() {}
+            CreateB26NameList();
+
+            //Create private static void CreateFileNamesDict() {}
+            CreateFileNamesDict();
+        }// end ProcdessSourceFiles
+            
+
+
+        /*
+         * to create the B26NamesList I need to cycle through the DataModels.AppProperties.ListOfAllFilePaths = listOfAllFilePaths;   
+         */
+        private static void CreateB26NameList() 
+        {
+
+            string dirIDplusFileName;
+            string currentB26FileName =  string.Empty;
+            //create a local fileCntr
+            int currentFileCntr = DataModels.AppProperties.FileCntr;
+
+           
+            //create local dictionaries
+            Dictionary<string, string> currnetDirDictNames = DataModels.AppProperties.DirNamesDict;
+            
+            //create local Lists
+            List<string> currentListOfAllFilePaths = DataModels.AppProperties.ListOfAllFilePaths;
+
+            List<string> currentFileNamesList = new List<string>();
+
+            //check to see if  DataModels.AppProperties.FileNamesList is null
+            if (DataModels.AppProperties.FileNamesList != null)
+            {
+                currentFileNamesList = DataModels.AppProperties.FileNamesList;
+            }
+            List<string> currentDirPlusFileNamesList = DataModels.AppProperties.DirPlusFileNamesList;
+
+            List<string> currentB26NamesList = new List<string>();
+            //check to see if  DataModels.AppProperties.currentB26NamesList is null
+
+            if (DataModels.AppProperties.B26FileNames != null)
+            {
+                currentB26NamesList = DataModels.AppProperties.B26FileNames;
+            }
+            
+
+            //create local strings
+            string shortFileName;//Articles.docx
+            string shortDirName;// Relibion\
+            string dirIntName; //0
+            string root = DataModels.AppProperties.RootDirectory;
+            string currntFilePath;
+            string currentFileName;
+           //string test;
+
+            //create local string arrays
+            // create a local varialbe to hold the simple file name
+            string[] currentListOfAllFilePathsArr = DataModels.AppProperties.ListOfAllFilePaths.ToArray();
+
+            /* to create a list of B26Names I need the abbreviated file name which is composed of its
+             * folders int name + the individual file name eg. for I can get from DirNamesDict
+             * I also need an abbreviated file name which I can get by using path in the ListFoldersAndFiles( 
+             */
+            //iterate thru currentListOfAllFilePathsArr
+            for (int i = 0; i < currentListOfAllFilePathsArr.Length; i++)
+            {
+                
+                currntFilePath = currentListOfAllFilePathsArr[i];//"C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion\\Articles List.docx"
+                currentFileName = Path.GetFileName(currntFilePath);//"Articles List.docx"
+
+
+                //if currentFileNamesList doesn't contain currentFileName then add it
+
+
+
+                if ( !currentFileNamesList.Contains(currentFileName)) 
+                { 
+                    currentFileNamesList.Add(currentFileName);
+                    //create a new B26FileName
+                    currentB26FileName = HelperClasses.StringHelper.ConvertToBase26(currentFileCntr);
+                    currentFileCntr++;
+                    currentB26NamesList.Add(currentB26FileName);
+                }
+                
+                shortDirName = currntFilePath.Replace(currentFileName, "");
+                shortDirName = shortDirName.Replace(root, "");
+                dirIntName = currnetDirDictNames[shortDirName];
+                dirIDplusFileName = dirIntName + '.' + currentFileName;
+                //update currnetDirDictNames if it doesn not contain Key dirIDplusFileName
+
+//STARTHERE
+//                /*THE FOLLOWING IS IN ERROR BECAUSE I AM TRYING TO ADD A NEW ENTRY
+//                 * currnetDirDictNames INSTEAD I SHOULD BE ADDING IT TO FileFetchDict, 
+//                 * a dictionary whose key if the full path to a file and whose value is Base26File# 
+//                 * {FilePath,Base26File#} WHICH I HAVENT CREATED YET */
+//                if (!currnetDirDictNames.ContainsKey(dirIDplusFileName))
+
+//                {
+//                    //z = currnetDirDictNames.Count;
+//                    //test = currentB26FileName;
+//                    currnetDirDictNames.Add(dirIDplusFileName,  currentB26FileName);
+
+//                }
+
+            }
+
+            //update FileNamesList
+            DataModels.AppProperties.FileNamesList = currentFileNamesList;
+
+            // Update FileNamesList
+            DataModels.AppProperties.FileNamesList = currentFileNamesList;
+
+            //return the updated fileCntr
+            DataModels.AppProperties.FileCntr = currentFileCntr;
+        }
+
+        //create a dictionary that holds (?,}
+        private static void CreateFileNamesDict() 
+        { 
+        }
+
+        // create a dictionary that holds {?,?]
+        private static void CreateDirNamesDict()
+        {
+            //set currentDirNamesDict to old DirNamesDict if it exists
+            Dictionary<string, string> currentDirNamesDict = DataModels.AppProperties.DirNamesDict;
+
+            //Get the old DirNamesDict if it exists
+            GetfileNamesAndPaths.currentDirNamesDict = DataModels.AppProperties.DirNamesDict;
+
+            //Set the boolean value oldDirNamesDictExists
+            if (GetfileNamesAndPaths.currentDirNamesDict != null) { oldDirNamesDictExists = true; }
+
+            //Set the FileInfoDictionary
+            if (DataModels.AppProperties.OldFileInfoDict != null)
+            {
+                FileInfoDict = DataModels.AppProperties.OldFileInfoDict;
+            }
+            else
+            {
+                FileInfoDict = new Dictionary<string, string>();
+            }
+            //get the source root directour
+            string root = DataModels.AppProperties.RootDirectory;
+
+
+            //Local variables
+            string currentFilesPath = "";
+            string currentFileName = "";
+            string currentFileAbbreviatdDirectoryName = "";//the directory left after removing the root and the FileNmae
+            string currentDirectoryIntName = "";//the DirID from DirNamesDict eg. Religion\\ = 0
+            string currentFileLengthStr = "";//the length of the file
+            string currentFileBase26Name = "";
+            string currentVersionNum = "";
+            string rootDirectory = DataModels.AppProperties.RootDirectory;
+            string FileNameDictKey = "";
+            string FileNameDictValue = "";
+
+            //iterate thru combinedDirArr and if a new directory esists get its name fron the
+            //current value of dirCntr and add it to DirNamesDict
+            string[] combinedDirArr = DataModels.AppProperties.CombinedDirList.ToArray();
+            for (int i = 0; i < combinedDirArr.Length; i++)
+            {
+                string old = combinedDirArr[i];
+                string newname = old.Replace(root, "");
+                newname = newname + '\\';
+                //see if oldDirNamesDictExists exists t
+                if (oldDirNamesDictExists)
+                {
+                    //see if it contains a Key =newname
+                    if (!GetfileNamesAndPaths.currentDirNamesDict.ContainsKey(newname))
+                    {
+                        //the old directory doesn't contain this directory name so add it
+                        string newDirValueStr = dirCntr.ToString();
+                        DirNamesDict.Add(newname, newDirValueStr);
+                        dirCntr++;
+                    }
+                }
+                else
+                {
+                    combinedDirArr[i] = newname;
+                    DirNamesDict.Add(newname, i.ToString());
+                }
+            }//end for (int i = 0; i<combinedDirArr.Length; i++)
+            DataModels.AppProperties.DirNamesDict = DirNamesDict;
+            DataModels.AppProperties.CurrentFilesPath = currentFilesPath;
+        }
+
+        //Create a list that contains the paths to all of the files in the root directory and its subdirectories
+        private static void CreateListOfAllFiles() 
+        {
+            //create a string array of combinedDirList so that you can interate thru it to create DirNamesDict
+            List<string> combinedDirList = DataModels.AppProperties.CombinedDirList;
+            string[] combinedDirArr = combinedDirList.ToArray();
+
+            //Create a list that contains all files using combinedDirArr
+            List<string> listOfAllFilePaths = new List<string>();
+            string currentDirectory;
+            List<string> allFilePathsList = new List<string>();
+            List<string> currentDirectoriesFilesList = new List<string>();
+
+            int arrayLength = combinedDirArr.Length;
+
+            for (int i = 0; i < arrayLength; i++)
+            {
+                currentDirectory = combinedDirArr[i];
+
+                currentDirectoriesFilesList = Directory.GetFiles(currentDirectory).ToList();
+                allFilePathsList.AddRange(currentDirectoriesFilesList);
+            }
+
+            listOfAllFilePaths = allFilePathsList;
+            DataModels.AppProperties.ListOfAllFilePaths = listOfAllFilePaths;
+
+
+            List<string> listOfShortFileNames = new List<string>();
+            string shortFileName;
+            //iterate thru listOfAllFilePaths and create a list of shortFileNames and if 
+            foreach (string file in listOfAllFilePaths)
+            {
+                shortFileName = Path.GetFileName(file);
+                listOfShortFileNames.Add(shortFileName);
+            }
+
+            DataModels.AppProperties.ListOfShortFileNames = listOfShortFileNames;
+        }
+
+        //CreateCombinrDirList contains the paths to all of the directoried in the root incouding the root
+        private static void CreateCombinrDirList() 
+        {
             //Get the path of the current source folder
             string rootFolder = DataModels.AppProperties.CurrentSourcePath;
 
@@ -93,287 +330,8 @@ namespace NewFBP.HelperClasses
             //Create a list that contains the root and all of its subdirectories
             List<string> combinedDirList = RootDirectory.Concat(AllDirectoriesList).ToList();
 
-            //create a string array of combinedDirList so that you can interate thru it to create DirNamesDict
-            string[] combinedDirArr = combinedDirList.ToArray();
-
-            //Create a list that contains all files using combinedDirArr
-            List<string> listOfAllFiles = new List<string>();
-            string currentDirectory;
-            List<string> allFilePathsList = new List<string>();
-            List<string> currentDirectoriesFilesList = new List<string>();
-            
-            int arrayLength = combinedDirArr.Length;
-
-            for (int i = 0; i < arrayLength; i++)
-            {
-                currentDirectory = combinedDirArr[i];
-
-                currentDirectoriesFilesList = Directory.GetFiles(currentDirectory).ToList();
-                allFilePathsList.AddRange(currentDirectoriesFilesList);
-            }
-
-            string stophere = "";
-
-            //Get the old DirNamesDict if it exists
-            oldDirNamesDict = DataModels.AppProperties.OldDirNamesDict;
-
-            //Set the boolean value oldDirNamesDictExists
-            if (oldDirNamesDict != null) { oldDirNamesDictExists = true; }
-
-            //Set the FileInfoDictionary
-            if (DataModels.AppProperties.OldFileInfoDict != null)
-            {
-                FileInfoDict = DataModels.AppProperties.OldFileInfoDict;
-            }
-            else
-            {
-                FileInfoDict = new Dictionary<string, string>();
-            }
-            //get the source root directour
-            string root = DataModels.AppProperties.RootDirectory;
-            #endregion general variables
-
-            #region local variables related to files
-
-            //Local variables
-            string currentFilesPath = "";
-            string currentFileName = "";
-            string currentFileAbbreviatdDirectoryName = "";//the directory left after removing the root and the FileNmae
-            string currentDirectoryIntName = "";//the DirID from DirNamesDict eg. Religion\\ = 0
-            string currentFileLengthStr = "";//the length of the file
-            string currentFileBase26Name = "";
-            string currentVersionNum = "";
-            string rootDirectory = DataModels.AppProperties.RootDirectory;
-            string FileNameDictKey = "";
-            string FileNameDictValue = "";
-
-            #endregion local variables related to files
-
-            #region Create DirNamesDict
-
-            //iterate thru combinedDirArr and if a new directory esists get its name fron the
-            //current value of dirCntr and add it to DirNamesDict
-            for (int i = 0; i < combinedDirArr.Length; i++)
-            {
-                string old = combinedDirArr[i];
-                string newname = old.Replace(root, "");
-                newname = newname + '\\';
-                //see if oldDirNamesDictExists exists t
-                if (oldDirNamesDictExists)
-                {
-                    //see if it contains a Key =newname
-                    if (!oldDirNamesDict.ContainsKey(newname))
-                    {
-                        //the old directory doesn't contain this directory name so add it
-                        string newDirValueStr = dirCntr.ToString();
-                        DirNamesDict.Add(newname, newDirValueStr);
-                        dirCntr++;
-                    }
-                }
-                else
-                {
-                    combinedDirArr[i] = newname;
-                    DirNamesDict.Add(newname, i.ToString());
-                }
-            }//end for (int i = 0; i<combinedDirArr.Length; i++)
-
-            // string Stop = "";
-            #endregion Create DirNamesDict
-
-
-            #region Create discription of File related Dictionaries
-
-            /* to process the files in the selected directory
-             * 1.   I will need the following dictionaries
-             *      a.  FileNamesDict a text file holding a compressed file path (composed of its directory's 
-             *          Key Value+the Nameof the file [DirID.FileName]) and the file's Base26File# 
-             *          eg {0.Articles List.docx,AAA}
-             *      b.  FileInfoDict a text file holding itsBase26File# unique file name as the Key and the file's current 
-             *          Length as the value [Base26File#,fileLength]. eg. {ACR, 81351} [Base26File#,Length]
-             *      c.  FileFetchDict, a dictionary whose key if the full path to a file and whose value is Base26File# 
-             *          {FilePath,Base26File#} eg. {"C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx",
-             *          AAA) this will be used to get the file to be copied to the Repository Backup folder and the Value 
-             *          (the Base26File#) will be used to search the CurrentVersionDict to the the current version number 
-             *          so it can be incemented and applied to the Base26File as the name of the current version
-             *          of the file in the Repository Backup folder. eg. the file named AAA.0 will contain the first version 
-             *          of the file "C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx"
-             *      d.  CurrentVersionDict, a dictionary whose Key is its Base26File and whose value if the most current 
-             *          version number, with all starting at 0. eg. the original value of file
-             *          "C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx" will be {AAA,0}
-             * 2.   I will need to create properties for all of these files as well a methods for retrieving their
-             *      current values form the SourceBackup folder;
-             *      a.  FileNamesDict       DONE
-             *      b.  FileInfoDict        DONE
-             *      c.  FileFetchDict       NOT DONE
-             *      d.  CurrentVersionDict  NOT DONE
-             */
-
-                #endregion Create discription of File related Dictionaries
-                // Get all the files in these folders
-
-                #region Create FileNamesDict 
-
-                if (DataModels.AppProperties.OldFileNamesDict != null)
-            { FileNamesDict = DataModels.AppProperties.OldFileNamesDict; }
-            else
-            { FileNamesDict = new Dictionary<string, string>(); }
-
-            // new method to create an array that holds the root (CurrentSourcePath) dire and all of the folders in it
-
-            // get the sourch directory
-            string sourcePath = DataModels.AppProperties.CurrentSourcePath;
-
-           
-
-            string stop = "";
-
-
-
-            foreach (string s in combinedDirList)
-            {
-                //pocess each folder in the root directory
-                if (!string.IsNullOrEmpty(s))
-                {
-                    //Get  the file paths of all the files in the current 's' directory
-                    //   and palce them in a string array filePathsArr
-                    string[] filePathsArr = Directory.GetFiles(s);
-
-                    //convert filePathsArr to  filePathsList
-                    List<string> filePathsList = filePathsArr.ToList();
-
-                    //iterate through the list of all of the file paths in the source folder
-                    foreach (string currentFilePath in filePathsList)
-                    {                        
-                        //save the path to the current file so it can be fetched for processing
-                        currentFilesPath = currentFilePath; //ERROR THID ID NOT USED
-                        //get the file variables for this file path
-                        string[] fileVariables = GetFileVariables(currentFilePath);
-                        //The name of the current file in currentFlePath
-                        currentFileName = fileVariables[0];
-                        //the folder being processed (Religion\)
-                        currentFileAbbreviatdDirectoryName = fileVariables[1];
-
-                        // get currentDirectoryIntName
-                        //test to see if the  DirNamesDict contains currentFileAbbreviatdDirectoryName
-                        //if it does then get if value, its file number converted to a string
-                        if (DirNamesDict.ContainsKey(currentFileAbbreviatdDirectoryName))
-                        {
-                            //the string representation of the int which reflects this direcotry in all directory 
-                            currentDirectoryIntName = DirNamesDict[currentFileAbbreviatdDirectoryName];
-                        }
-                        else
-                        {
-                            MessageBox.Show("The directory " + currentFileAbbreviatdDirectoryName + " coesn't exist");
-                        }//end test to see if the  DirNamesDict contains currentFileAbbreviatdDirectoryName
-
-                        // get currentFileLengthStr
-                        FileInfo fileInfo = new FileInfo(currentFilePath);
-
-                        //a string representing the size of the current file  
-                        currentFileLengthStr = fileInfo.Length.ToString();
-
-                        // create the Key value of the FileNameDict, DirNameInt.currentFileName ie "0.Articles List.docx"
-                        FileNameDictKey = currentDirectoryIntName + '.' + currentFileName;
-
-                        //CHANG INSTRUCTION add the above value to DictIdB26NameList
-
-                        // if the FileNameDict  contains this key then get its value else creat a new entry
-                        //with with key and the current value of FileCntr converted to Base26
-                        if (FileNamesDict.ContainsKey(FileNameDictKey))
-                        {
-                            FileNameDictValue = FileNamesDict[FileNameDictKey];
-                        }
-                        else
-                        {
-                            //get FileCntr and covert it to Base26 to createFileNameDictKey
-                            FileNameDictValue = HelperClasses.StringHelper.ConvertToBase26(fileCntr);
-
-                            // Add the Key Value pair FileNameDictKey and FileNameDictValue to FileNamesDict
-                            FileNamesDict.Add(FileNameDictKey, FileNameDictValue);
-
-                            //add the FileNameDictValue to the B26NameList
-                            B26NameList.Add(FileNameDictValue);
-                            fileCntr++;
-                        }
-                        //filePathsList = filePathsList;
-
-                    }//end  foreach(string currentFilePath in filePathsList)
-                    string test = " see if it gets the next directory";
-
-                    //string test = " test B26NameList";
-                }//end if (!string.IsNullOrEmpty
-
-                combinedDirList = combinedDirList;
-            }//end foreadch (string s
-
-
-           // string Stop = "";
-
-            //The items in FileNamesDict have FolderId (an int to string)+'.'+FileName as a Key
-            //The items in FileNamesDict have FileBase26 name as a Value
-
-            //CREATE DirB26NameArr from the values in 
-            string[] DirB26NameArr = FileNamesDict.Keys.ToArray();
-
-            //CREATE B26NameArr
-            string[] B26NameArr = FileNamesDict.Values.ToArray();
-
-            
-
-            //CREATE FileInfoDict . { ACR, 81351}
-            //[Base26File#,Length]*
-            //cycle thru combinedDirArr getting file paths and getting their length
-            //int listCntr = 0;
-            //foreach (string path in FilePathList)
-            //{
-            //    if (File.Exists(path))
-            //    {
-            //        FileInfo fileInfo = new FileInfo(path);
-            //        string size = fileInfo.Length.ToString();
-            //        FileInfoDict.Add(B26NameArr[listCntr], size);
-            //        listCntr++;
-            //    }
-            //}
-
-
-            //string Stop = "";
-            #endregion Create FileNamesDict
-
-            //string stop = "Stop here";
-
-
-            #region Create FileInfoDict
-            /*FileInfoDict a dictoionary whose Key is its its Base26File# unique file name 
-             * and whose Value is its file length 
-             Length as the value [Base26File#,fileLength]. eg. {ACR, 81351} [Base26File#,Length]*/
-
-            // Create index string arrays of combinedDirList and FileNamesDict
-            string[] combinedDirListArray = combinedDirList.ToArray();
-
-
-                // var keyValueList = new List<KeyValuePair<string, int>>(FileNamesDict);
-
-                /*I NEED SOMEWAY TO HAVE ARRAYS OF STIRNGS THAT CONTAIN THE FILEPATHS OF ALL FILES , THIR BASE26 NAME 
-                 * AND THEIR DIRECTORY'S ABBREVIATED NAME*/
-
-
-
-
-                foreach (string filePath in combinedDirList)
-                {
-                    ////get this file's Base26File#
-                    //Create a private Method to get the current file Paths various variabes
-                    //string fileNameB26 = HelperClasses.StringHelper.ConvertToBase26(fileCntr);
-                    //fileCntr++;
-
-
-                }
-
-
-            //string z = "Stop Here";
-            #endregion FileInfoDict
-
-        }//end  public static void ProcessSourceFiles()
+            DataModels.AppProperties.CombinedDirList = combinedDirList;
+        }
 
         #region ListFoldersAndFiles
         private static void ListFoldersAndFiles(string selectedFolder)

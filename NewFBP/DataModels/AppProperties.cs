@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,12 @@ namespace NewFBP.DataModels
 {
     public static class AppProperties
     {
+
+        //TOC LINE
+        // strings = #region strings
+        // dictionaries = #region Dictionaries
+        // Integers = #region Integers
+        // Lists = #region Lists
 
         #region strings
         public static string CurrentSourceName { get; set; }//The name of the directory selected i.e. "Religion"
@@ -33,23 +40,28 @@ namespace NewFBP.DataModels
         public static string SourceRootDirectory{ get; set; }
 
 
-        public static string  RootDirectory { get; set; }
         /* the root directory is that portion of CurrentSourcePath which is removed 
          * i.e. ("C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\) so that the directory
          * names in the source can be compared with the directory names in the output Dictionary of Directories
          */
+        public static string  RootDirectory { get; set; }
 
         /* the SourceBackupDirPath is to path the folder where the source backup data will be stored
          * 
          */
         public static string  SourceBackupDirPath { get; set; }
+
+        public static string CurrentFilesPath { get; set; }
         #endregion strings
 
         #region Dictionaries
 
+        //Religion\,0
+       // public static Dictionary<string, string> DirNamesDict { get; set; }
+
         //OldDirNamesDict
         // the OldDirNamesDict will be stored in the SpourceBackup folder with as Key+'~'+Value
-        public static Dictionary<string,string> OldDirNamesDict { get; set; }
+        public static Dictionary<string,string> DirNamesDict { get; set; }
 
         //OldFileNamesDict
         public static Dictionary<string, string> OldFileNamesDict { get; set; }
@@ -67,7 +79,7 @@ namespace NewFBP.DataModels
         public static Dictionary<string, string> OldFileInfoDict { get; set; }
 
         /*
-            FileFetchDict, a dictionary whose key if the full path to a file and whose value is Base26File# 
+            OldFileFetchDict, a dictionary whose key if the full path to a file and whose value is Base26File# 
             [FilePath,Base26File#} eg. {"C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx",AAA) 
             this will be used to get the file to be copied to the Repository Backup folder and the Value (the Base26File#)
             will be used to search the CurrentVersionDict to the the current version number so it can be incemented and 
@@ -89,6 +101,29 @@ namespace NewFBP.DataModels
         public static int FileCntr { get; set; }
 
         #endregion integers
+
+        #region Lists
+
+        //creat a list that holds B26FileNames
+        public static List<string> B26FileNames { get; set; }
+        //create a list that contines DirName.FileName "0.Religion\"
+        public static List<string> DirPlusFileNamesList { get; set; }
+
+        // create a list that contains the simple file names
+        public static List<string> FileNamesList { get; set; }
+
+        //Create a list that contains the root and all of its subdirectories
+        public static List<string> CombinedDirList { get; set; }
+
+        //Create a list that contains the paths to all of the files in the root directory and its subdirectories
+        public static List<string> ListOfAllFilePaths { get; set; }
+
+        //create a list of short file name
+        public static List<string> ListOfShortFileNames { get; set; }
+
+        public static List<string> ListOfAll26Names { get; set; }
+
+        #endregion Lists
     }//end 
 
 }// End namespace
