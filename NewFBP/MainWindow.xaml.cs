@@ -55,7 +55,7 @@ namespace NewFBP
                  * so that the properties of a directorr in the source can be compared to 
                  * a directory in the storage site.
                  * For example if the source directory path is "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion"
-                 * and I want to compare it to the directory whose path is "D:\\ReligionBackup\\DirNamesDict\\Religion" they 
+                 * and I want to compare it to the directory whose path is "D:\\ReligionBackup\\DirIDNamesDict\\Religion" they 
                  * can only be compared if I strip off the roots
                  */
                 string sourceRootDirectory = sourcePath.Replace(SourceName, "");
@@ -142,56 +142,64 @@ namespace NewFBP
                                 string[] KeyValuePairArr = currentDirNamesDictArr[i].Split('~');
                                 OldDirNamesDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
                             }
-                            DataModels.AppProperties.DirNamesDict = OldDirNamesDict;
+                            DataModels.AppProperties.DirIDNamesDict = OldDirNamesDict;
                         }
                         #endregion get OldDirNamesDict
 
-                    #region get OldFileNamesDict
+                        #region get OldFileNamesDict
 
-                        // get OldDirNamesDict
+                        // get OldDirNamesDict  CHANGED OldDirNamesDict TO CurrentFileNamesDict
                         filePath = sourceBackupDirPath + '.' + "CurrentFileNamesDict.txt";
                         //create a string array to hold the lines of the "CurrentFileNamesDict.txt file
-                        string[] currentFileNamesDict;
+                        //CHANGED currentFileNamesDict TO currentFileNamesDictArr
+                        string[] currentFileNamesDictArr;
 
-                        //create a dictionary to hold the Keyvalue pairs of OldFileNamesDict
-                        Dictionary<string, string> OldFileNamesDict = new Dictionary<string, string>();
+                        /*
+                         * create a dictionary currentFileNamesDict, to hold XXXXXXXXXXXXXXXXt 
+                         * Set it to the global FileNamesDict if it exists, if it doesn't create it 
+                         * 
+                         * CHECK TO SEE WHAT THE GLOBAL
+                        */
 
-                        // see if filePath file exists and if it does get it else create a new OldFileNamesDict
+                        //CHANGED OldFileNamesDict  TO currentFileNamesDict
+                        Dictionary<string, string> currentFileNamesDict = new Dictionary<string, string>();
+                     //   if(DataModels.AppProperties.)
+                        // see if filePath file exists and if it does get it else create a new currentFileNamesDict
                         if (File.Exists(filePath))
                         {
-                            string[] currentFileNamesDictArr = File.ReadAllLines(filePath);
+                            currentFileNamesDictArr = File.ReadAllLines(filePath);
 
-                            //cycle thru currentFileNamesDictArr and create OldFileNamesDict
+                            //cycle thru currentFileNamesDictArr and create currentFileNamesDict
                             for (int i = 0; i < currentFileNamesDictArr.Length; i++)
                             {
                                 string[] KeyValuePairArr = currentFileNamesDictArr[i].Split('~');
-                                OldFileNamesDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
+                                currentFileNamesDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
                             }
-                            DataModels.AppProperties.OldFileNamesDict = OldFileNamesDict;
+                            DataModels.AppProperties.FileNamesDict = currentFileNamesDict;
                         }
                         #endregion get OldFileNamesDict
 
                     #region get FileInfoDict
-                        // get OldFileInfoDict
+                        // get FileInfoDict
                         filePath = sourceBackupDirPath + '.' + "CurrentFileInfoDict.txt";
                         //create a string array to hold the lines of the "CurrentFileInfoDict.txt file
                         string[] currentFileInfoDict;
 
-                        //create a dictionary to hold the Keyvalue pairs of OldFileInfoDict
+                        //create a dictionary to hold the Keyvalue pairs of FileInfoDict
                         Dictionary<string, string> OldFileInfoDict = new Dictionary<string, string>();
 
-                        // see if filePath file exists and if it does get it else create a new OldFileInfoDict
+                        // see if filePath file exists and if it does get it else create a new FileInfoDict
                         if (File.Exists(filePath))
                         {
                             string[] currentFileInfoDictArr = File.ReadAllLines(filePath);
 
-                            //cycle thru currentFileInfoDictArr and create OldFileInfoDict
+                            //cycle thru currentFileInfoDictArr and create FileInfoDict
                             for (int i = 0; i < currentFileInfoDictArr.Length; i++)
                             {
                                 string[] KeyValuePairArr = currentFileInfoDictArr[i].Split('~');
                                 OldFileInfoDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
                             }
-                            DataModels.AppProperties.OldFileInfoDict = OldFileInfoDict;
+                            DataModels.AppProperties.FileInfoDict = OldFileInfoDict;
                         }
 
                         #endregion FileInfoDict

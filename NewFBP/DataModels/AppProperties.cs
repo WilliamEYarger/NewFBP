@@ -17,6 +17,11 @@ namespace NewFBP.DataModels
         // Integers = #region Integers
         // Lists = #region Lists
 
+        #region arrays
+
+        public static string[] ShortdDirNamesArr { get; set; }//holds the sohrt dir names eg Religion/
+        #endregion ShortdDirNamesArr
+
         #region strings
         public static string CurrentSourceName { get; set; }//The name of the directory selected i.e. "Religion"
 
@@ -34,7 +39,7 @@ namespace NewFBP.DataModels
     
         /*
          * The SourcerootDirectory in the CurrentSourcePath - SourceDirectory
-         * It is used to create the entries in the DirNamesDict
+         * It is used to create the entries in the DirIDNamesDict
          * i.e. "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\"
          */
         public static string SourceRootDirectory{ get; set; }
@@ -57,16 +62,20 @@ namespace NewFBP.DataModels
         #region Dictionaries
 
         //Religion\,0
-       // public static Dictionary<string, string> DirNamesDict { get; set; }
+        // public static Dictionary<string, string> DirIDNamesDict { get; set; }
 
-        //OldDirNamesDict
-        // the OldDirNamesDict will be stored in the SpourceBackup folder with as Key+'~'+Value
-        public static Dictionary<string,string> DirNamesDict { get; set; }
+        /* the DirNamesDict contians a series of Key Value pairs where 
+         * the Key is a a Directory name ie Religion\ to
+         * Religion\ReligiousStudies\Christianity\RR Reformation\RR Reformation Study Folder\
+         * and the Va;lues are that Directories int ID num "0" ... "365" ect
+         * */
 
-        //OldFileNamesDict
-        public static Dictionary<string, string> OldFileNamesDict { get; set; }
+        public static Dictionary<string,string> DirIDNamesDict { get; set; }
 
-        //OldFileInfoDict
+
+        //FileNamesDict
+        public static Dictionary<string, string> FileNamesDict { get; set; }
+        //FileInfoDict
         /*
          * FileFetchDict, a dictionary whose Key if the full path to a file and whose Value is Base26File# 
          * {FilePath,Base26File#} eg. {"C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx",AAA) 
@@ -76,7 +85,7 @@ namespace NewFBP.DataModels
          * eg. the file named AAA.0 will contain the first version of the file 
          * "C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx"
          */
-        public static Dictionary<string, string> OldFileInfoDict { get; set; }
+        public static Dictionary<string, string> FileInfoDict { get; set; }
 
         /*
             OldFileFetchDict, a dictionary whose key if the full path to a file and whose value is Base26File# 
@@ -104,8 +113,8 @@ namespace NewFBP.DataModels
 
         #region Lists
 
-        //creat a list that holds B26FileNames
-        public static List<string> B26FileNames { get; set; }
+        //creat a list that holds B26FileNamesList
+        public static List<string> B26FileNamesList { get; set; }
         //create a list that contines DirName.FileName "0.Religion\"
         public static List<string> DirPlusFileNamesList { get; set; }
 

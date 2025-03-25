@@ -5,11 +5,11 @@ Date		name	    Purpose														line
 20250320    3.NewOutputSite branch created at line 223
 2025022     3.NewOutputSite branch updated to create allFilePathsList (which contains the paths of all files) and 
             combinedDirArr (contains the paths to all the directories) 
-20250323    ToDoList
-            1. organize ApPropertics by type c TOC ###DONE
-            2. simplify GetfileNamesAndPaths.ProcessSourceFiles by moving individual tasks into methods
-                a. combinedDirList create property and move DONE
-                b. listOfAllFiles create propterty and move DONE
+20250325 committed brance 3 created DirIDNamesDict
+            
+            
+            
+            
 
 
 
@@ -235,3 +235,4 @@ Step 3. determine what files will be stored in the SourceBackup folder:
                 1. old DirNamesDic 
                 2. old FileNamesDict
                 3. old FileInfoDict
+20250325 committed brance 3 created DirIDNamesDict

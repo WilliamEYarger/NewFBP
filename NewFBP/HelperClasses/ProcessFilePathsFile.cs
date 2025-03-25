@@ -8,9 +8,9 @@ namespace NewFBP.HelperClasses
 {
     public static class ProcessFilePathsFile
     {
-        //public static Dictionary<string, string> DirNamesDict { get; private set; }
+        //public static Dictionary<string, string> DirIDNamesDict { get; private set; }
         //public static Dictionary<string, string> FileNamesDict { get; private set; }
-        //public static Dictionary<string, string> FileInfoDict { get; private set; }
+        //public static Dictionary<string, string> currentFileInfoDict { get; private set; }
         private static string RootPath;
         private static int DirCntr;
         private static int FileCntr;
@@ -38,7 +38,7 @@ namespace NewFBP.HelperClasses
 
             currentDirKey = DataModels.AppProperties.SourceDirectory + '\\';
             currentDirValue = "0";
-            // Create the first DirNamesDict from the CurrentSourceName
+            // Create the first DirIDNamesDict from the CurrentSourceName
 
             DirNamesDict.Add(currentDirKey, currentDirValue);
             DirCntr++;
@@ -54,13 +54,13 @@ namespace NewFBP.HelperClasses
                 //step 3 remove the filenmae from newline
                 newline = newline.Replace(fileName, "");
 
-                //step 4 determine if DirNamesDict does or does not has a Key = newline,
+                //step 4 determine if DirIDNamesDict does or does not has a Key = newline,
                 //if it doesn't create one
                 //set a new string currentDirKey = whatever the correct key is
                 currentDirKey = newline;
                 if (!DirNamesDict.ContainsKey(newline))
                 {
-                    //The current value of line contains a value that is not in the DirNamesDict
+                    //The current value of line contains a value that is not in the DirIDNamesDict
                     // add a new key value 
                     currentDirValue = DirCntr.ToString();
                     DirNamesDict.Add(currentDirKey, currentDirValue);
@@ -92,7 +92,7 @@ namespace NewFBP.HelperClasses
 
                 /* The following section gets the needed update data about the file shown in line
                  * It uses the System.IO.FileInfo to get the data
-                 * and stores the data in  the FileInfoDict dictionary
+                 * and stores the data in  the currentFileInfoDict dictionary
                  * the currentFileInfoKey =the currentFileValue
                  * the currentFileInfoValue is currentFileSizeStr+"~"+lastFileModifiedDateStr
                  */
@@ -102,20 +102,20 @@ namespace NewFBP.HelperClasses
                 currentFileSizeStr= fileInfo.Length.ToString();
                 //Get lastFileModifiedDateStr
                 lastFileModifiedDateStr= fileInfo.LastWriteTime.ToString();
-                //set the Key for the FileInfoDict dictionary
+                //set the Key for the currentFileInfoDict dictionary
                 currentFileInfoKey = currentFileValue;
-                //set the Value  for the FileInfoDict dictionary
+                //set the Value  for the currentFileInfoDict dictionary
                 currentFileInfoValue = currentFileSizeStr + "~" + lastFileModifiedDateStr;
-                //Update the FileInfoDict dictionary
+                //Update the currentFileInfoDict dictionary
                 FileInfoDict.Add(currentFileInfoKey, currentFileInfoValue);
 
 
             }// end foreach
 
             /*  At this point the following are defined
-             *      DirNamesDict = new Dictionary<string, string>();
+             *      DirIDNamesDict = new Dictionary<string, string>();
                     FileNamesDict = new Dictionary<string, string>();
-                    FileInfoDict = new Dictionary<string,string>();
+                    currentFileInfoDict = new Dictionary<string,string>();
              * 
              */
             int i = 1;
