@@ -111,16 +111,7 @@ namespace NewFBP.HelperClasses
          */
         private static void CreateB26NameList() 
         {
-            /* The golbal properties I need at this point are
-             * DataModels.AppProperties.FileCntr;
-             * DataModels.AppProperties.DirIDNamesDict
-             * DataModels.AppProperties.ListOfAllFilePaths
-             * DataModels.AppProperties.DirPlusFileNamesList
-             * DataModels.AppProperties.B26FileName            * 
-             * 
-             */
-
-            //SET local variables to Global properties if they exist and if not set booleans
+           //SET local variables to Global properties if they exist and if not set booleans
             //create a local currentFileCntr
             int currentFileCntr = DataModels.AppProperties.FileCntr;
 
@@ -142,23 +133,25 @@ namespace NewFBP.HelperClasses
             //if B26FileNamesList exists create currentB26NamesList else Set boolB26FileNamesExists to false
             List<string> currentB26NamesList = new List<string>();
             if (DataModels.AppProperties.B26FileNamesList != null)
-            { currentB26NamesList = DataModels.AppProperties.B26FileNamesList;}
+            { currentB26NamesList = DataModels.AppProperties.B26FileNamesList;}//updated
             else 
             { boolB26FileNamesExists = false; }
 
             // if FileNamesList exists create currentFileNamesList else SET boolFileNamesListExists to false
             List<string> currentFileNamesList = new List<string>();
-            currentFileNamesList = DataModels.AppProperties.FileNamesList;
+            currentFileNamesList = DataModels.AppProperties.FileNamesList;//updated
             //check to see if  DataModels.AppProperties.FileNamesList is null
             if (DataModels.AppProperties.FileNamesList != null)
             { currentFileNamesList = DataModels.AppProperties.FileNamesList; }
             else { boolFileNamesListExists = false; }
 
-            // if DirPlusFileNamesList exists create currentDirPlusFileNamesList else SET boolDirPlusFileNamesListExists to false
-            List<string> currentDirPlusFileNamesList = new List<string>();
-             if (DataModels.AppProperties.DirPlusFileNamesList!=null)
-                { currentDirPlusFileNamesList = DataModels.AppProperties.DirPlusFileNamesList; }
-             else { boolDirPlusFileNamesListExists = false; }
+
+            ////ERROR ERROR THE FOLLOWING SHOULD BE IN ITS OWN PROCEDURE
+            //// if DirPlusFileNamesList exists create currentDirPlusFileNamesList else SET boolDirPlusFileNamesListExists to false
+            //List<string> currentDirPlusFileNamesList = new List<string>();
+            // if (DataModels.AppProperties.DirPlusFileNamesList!=null)
+            //    { currentDirPlusFileNamesList = DataModels.AppProperties.DirPlusFileNamesList; }//NOT UPDATED
+            // else { boolDirPlusFileNamesListExists = false; }
             
             //create local strings
             string shortFileName;//Articles.docx
@@ -169,22 +162,13 @@ namespace NewFBP.HelperClasses
             string currentFileName;
 
             //create local string arrays
-            // create a local varialbe to hold the simple file name
             string[] currentListOfAllFilePathsArr = DataModels.AppProperties.ListOfAllFilePaths.ToArray();
 
-            /* to create a list of B26Names I need the abbreviated file name which is composed of its
-             * folders int name + the individual file name eg. for I can get from DirIDNamesDict
-             * I also need an abbreviated file name which I can get by using path in the ListFoldersAndFiles( 
-             */
-            //iterate thru currentListOfAllFilePathsArr to create currentB26NamesList
+            //Create and or update currentFileNamesList and currentB26NamesList
             for (int i = 0; i < currentListOfAllFilePathsArr.Length; i++)
             {                
                 currntFilePath = currentListOfAllFilePathsArr[i];//"C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion\\Articles List.docx"
                 currentFileName = Path.GetFileName(currntFilePath);//"Articles List.docx"
-
-
-                //if currentFileNamesList doesn't contain currentFileName (which it wont on the
-                //first use of the program) then add it 
 
                 //I need to see if crrentFileNamesList is nullbefore testing to see if it contains a current file name
                 if(currentFileNamesList == null) 
@@ -209,17 +193,13 @@ namespace NewFBP.HelperClasses
                     currentB26NamesList.Add(currentB26FileName);
                 }
 
-               
-
-            }// end iterate thru currentListOfAllFilePathsArr to create currentB26NamesList
-
-            //CHECH TO SEE IF THE FOLLOWING NEED TO BE UPDATED
+            }// end //Create and or update currentFileNamesList and currentB26NamesList
 
             //update FileNamesList
             DataModels.AppProperties.FileNamesList = currentFileNamesList;
 
-            // Update FileNamesList
-            //DataModels.AppProperties.FileNamesList = currentFileNamesList;
+            // Update DataModels.AppProperties.B26FileNamesList
+            DataModels.AppProperties.B26FileNamesList = currentB26NamesList;
 
             //return the updated currentFileCntr
             DataModels.AppProperties.FileCntr = currentFileCntr;
