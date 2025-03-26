@@ -6,7 +6,7 @@ Date		name	    Purpose														line
 2025022     3.NewOutputSite branch updated to create allFilePathsList (which contains the paths of all files) and 
             combinedDirArr (contains the paths to all the directories) 
 20250325 committed brance 3 created DirIDNamesDict
-            
+20250326 succesfully created FileNamesList, B26FileNamesList and updated and saved FileCntr            
             
             
             
@@ -236,3 +236,6 @@ Step 3. determine what files will be stored in the SourceBackup folder:
                 2. old FileNamesDict
                 3. old FileInfoDict
 20250325 committed brance 3 created DirIDNamesDict
+
+branch 4  in CreateB26NameList() sucessfulls creates and updates FileNamesList, B26FileNamesList,  FileInfoDict
+    and FileCntr in AppProperties

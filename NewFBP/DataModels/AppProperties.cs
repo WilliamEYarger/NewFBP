@@ -18,15 +18,21 @@ namespace NewFBP.DataModels
         // Lists = #region Lists
 
         #region arrays
-
+        /*
+         ShortdDirNamesArr is a string array that holds all of the short directory names (the 
+        value obtained after removing the root directory path from the path the the current directory 
+        and includes its final '\\'
+         */
         public static string[] ShortdDirNamesArr { get; set; }//holds the sohrt dir names eg Religion/
         #endregion ShortdDirNamesArr
 
         #region strings
         public static string CurrentSourceName { get; set; }//The name of the directory selected i.e. "Religion"
-
-        public static string CurrentSourcePath { get; set; }//the complete path to the directory selected for backup 
-        // i.e. "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion"
+        /*CurrentSourcePath 
+         * /the complete path to the directory selected for backup 
+         * i.e. "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion"
+         */
+        public static string CurrentSourcePath { get; set; }
 
         public static string FileNamesPath { get; set; }// the name of the file that holds the FileNames
 
@@ -121,10 +127,16 @@ namespace NewFBP.DataModels
         // create a list that contains the simple file names
         public static List<string> FileNamesList { get; set; }
 
-        //Create a list that contains the root and all of its subdirectories
-        public static List<string> CombinedDirList { get; set; }
+        
+        /*CombinedDirPathList is obtained by concatinating the RootDirectory and the allDirectoriesList to
+          Create a list (combinedDirList)that contains the root and all of its subdirectories
+        "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion" to
+        "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion\\Christianity\\Writings\\New Testament\\Books of the New Testament\\QA Files for books of the New Testament\\QAResults"
+         */
+        public static List<string> CombinedDirPathList { get; set; }
 
-        //Create a list that contains the paths to all of the files in the root directory and its subdirectories
+        /*ListOfAllFilePaths is a list that contains the paths to all of the files 
+         * in the root directory and its subdirectories*/
         public static List<string> ListOfAllFilePaths { get; set; }
 
         //create a list of short file name
