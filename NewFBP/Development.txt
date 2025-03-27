@@ -6,7 +6,9 @@ Date		name	    Purpose														line
 2025022     3.NewOutputSite branch updated to create allFilePathsList (which contains the paths of all files) and 
             combinedDirArr (contains the paths to all the directories) 
 20250325 committed brance 3 created DirIDNamesDict
-20250326 succesfully created FileNamesList, B26FileNamesList and updated and saved FileCntr            
+20250326 succesfully created FileNamesList, B26FileNamesList and updated and saved FileCntr   
+202503271148
+Committ message solved the problem in that the various output files related to files didn't have the same count
             
             
             

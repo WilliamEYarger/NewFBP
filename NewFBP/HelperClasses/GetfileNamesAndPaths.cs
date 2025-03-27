@@ -203,6 +203,10 @@ namespace NewFBP.HelperClasses
 
                 shortDirName = shortDirName.Replace(currentFileName, "");
 
+                dirIntName = currentDirIDNamesDict[shortDirName];
+                //Get the didIDname and place it at the front of FileVersionDict
+
+                currentFileName = dirIntName + '.' + currentFileName;
                 if (!currentFileNamesList.Contains(currentFileName))
                 {
                     //This is a new file
@@ -298,14 +302,14 @@ namespace NewFBP.HelperClasses
         // create a dictionary that holds {ShortDirName,DirIntName]
         private static void CreateDirIDNamesDict()
         {
-            //QUESTION QUESTION do I need currentFileLengthDict here since I created it earlies
+            ////QUESTION QUESTION do I need currentFileLengthDict here since I created it earlies
 
-            Dictionary<string,string> currentFileLengthDict = new Dictionary<string,string>();
+            //Dictionary<string,string> currentFileLengthDict = new Dictionary<string,string>();
 
-            if (DataModels.AppProperties.FileNamesDict != null) 
-            {
-                currentFileLengthDict = DataModels.AppProperties.FileNamesDict;   
-            }
+            //if (DataModels.AppProperties.FileNamesDict != null) 
+            //{
+            //    currentFileLengthDict = DataModels.AppProperties.FileNamesDict;   
+            //}
 
             /*currentDirIDNamesDict 
              * is created from DataModels.AppProperties.DirIDNamesDict if it is not null
@@ -319,15 +323,15 @@ namespace NewFBP.HelperClasses
                 Dictionary<string, string> currentDirIDNamesDict = new Dictionary<string,string>(); 
             }
 
-            //Create the currentFileLengthDictionary from the global if it exists and as a local if it doesn't
-            if (DataModels.AppProperties.FileLengthDict != null)
-            {
-                currentFileLengthDict = DataModels.AppProperties.FileLengthDict;
-            }
-            else
-            {
-                currentFileLengthDict = new Dictionary<string, string>();
-            }
+            ////Create the currentFileLengthDictionary from the global if it exists and as a local if it doesn't
+            //if (DataModels.AppProperties.FileLengthDict != null)
+            //{
+            //    currentFileLengthDict = DataModels.AppProperties.FileLengthDict;
+            //}
+            //else
+            //{
+            //    currentFileLengthDict = new Dictionary<string, string>();
+            //}
             //get the source root directour
             string root = DataModels.AppProperties.RootDirectory;
 
