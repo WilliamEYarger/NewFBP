@@ -180,55 +180,55 @@ namespace NewFBP
                         #endregion get OldFileNamesDict
 
                     #region get FileInfoDict
-                        // get FileInfoDict
+                        // get FileLengthDict
                         filePath = sourceBackupDirPath + '.' + "CurrentFileInfoDict.txt";
                         //create a string array to hold the lines of the "CurrentFileInfoDict.txt file
                         string[] currentFileInfoDict;
 
-                        //create a dictionary to hold the Keyvalue pairs of FileInfoDict
+                        //create a dictionary to hold the Keyvalue pairs of FileLengthDict
                         Dictionary<string, string> OldFileInfoDict = new Dictionary<string, string>();
 
-                        // see if filePath file exists and if it does get it else create a new FileInfoDict
+                        // see if filePath file exists and if it does get it else create a new FileLengthDict
                         if (File.Exists(filePath))
                         {
                             string[] currentFileInfoDictArr = File.ReadAllLines(filePath);
 
-                            //cycle thru currentFileInfoDictArr and create FileInfoDict
+                            //cycle thru currentFileInfoDictArr and create FileLengthDict
                             for (int i = 0; i < currentFileInfoDictArr.Length; i++)
                             {
                                 string[] KeyValuePairArr = currentFileInfoDictArr[i].Split('~');
                                 OldFileInfoDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
                             }
-                            DataModels.AppProperties.FileInfoDict = OldFileInfoDict;
+                            DataModels.AppProperties.FileLengthDict = OldFileInfoDict;
                         }
 
                         #endregion FileInfoDict
 
-                    #region get FileFetchDict
+                    //#region get FileFetchDict
 
-                        // get OldFileFetchDict
-                        filePath = sourceBackupDirPath + '.' + "CurrentFileFetchDict.txt";
-                        //create a string array to hold the lines of the "CurrentFileFetchDict.txt file
-                        string[] currentFileFetchDict;
+                    //    // get OldFileFetchDict
+                    //    filePath = sourceBackupDirPath + '.' + "CurrentFileFetchDict.txt";
+                    //    //create a string array to hold the lines of the "CurrentFileFetchDict.txt file
+                    //    string[] currentFileFetchDict;
 
-                        //create a dictionary to hold the Keyvalue pairs of OldFileFetchDict
-                        Dictionary<string, string> OldFileFetchDict = new Dictionary<string, string>();
+                    //    //create a dictionary to hold the Keyvalue pairs of OldFileFetchDict
+                    //    Dictionary<string, string> OldFileFetchDict = new Dictionary<string, string>();
 
-                        // see if filePath file exists and if it does get it else create a new OldFileFetchDict
-                        if (File.Exists(filePath))
-                        {
-                            string[] currentFileFetchDictArr = File.ReadAllLines(filePath);
+                    //    // see if filePath file exists and if it does get it else create a new OldFileFetchDict
+                    //    if (File.Exists(filePath))
+                    //    {
+                    //        string[] currentFileFetchDictArr = File.ReadAllLines(filePath);
 
-                            //cycle thru currentFileFetchDictArr and create OldFileFetchDict
-                            for (int i = 0; i < currentFileFetchDictArr.Length; i++)
-                            {
-                                string[] KeyValuePairArr = currentFileFetchDictArr[i].Split('~');
-                                OldFileFetchDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
-                            }
-                            DataModels.AppProperties.OldFileFetchDict = OldFileFetchDict;
-                        }
+                    //        //cycle thru currentFileFetchDictArr and create OldFileFetchDict
+                    //        for (int i = 0; i < currentFileFetchDictArr.Length; i++)
+                    //        {
+                    //            string[] KeyValuePairArr = currentFileFetchDictArr[i].Split('~');
+                    //            OldFileFetchDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
+                    //        }
+                    //        DataModels.AppProperties.OldFileFetchDict = OldFileFetchDict;
+                    //    }
 
-                        #endregion FileFetchDict
+                    //    #endregion FileFetchDict
 
                     #region get CurrentVersionDict
 

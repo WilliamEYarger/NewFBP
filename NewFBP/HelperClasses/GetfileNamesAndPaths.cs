@@ -41,12 +41,6 @@ namespace NewFBP.HelperClasses
          */
         private static Dictionary<string, string> FileNamesDict = new Dictionary<string, string>();
 
-        /* currentFileInfoDict a text file holding its Base26File# unique file name as the Key and the file's current 
-           Length as the value [Base26File#,fileLength]. eg. {ACR, 81351} [Base26File#,Length]
-            I am creating it here as a local so that later I can test to see if a global dictionary exists
-            before assiging values*/
-        private static Dictionary<string, string> currentFileInfoDict = new Dictionary<string, string>();
-
 
         /* Create an arrray of strings DitIdB26Name that will hold all of the DirId.FileName(B26) in the
          * sane order as the files in the FileNamesDict*/
@@ -94,10 +88,8 @@ namespace NewFBP.HelperClasses
             //Create private static voide Create B26NameList() {}
             CreateB26NameList();//DONE
 
-            //Create DirDictNames
-           // OldCreateDirIDNamesDict();//DONE
-
-            CreateFileVersionDict();
+            //Create a dictionary that holds  {"C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx",AAA) 
+            CreateFileLengthDict();
         }// end ProcdessSourceFiles
 
 
@@ -155,25 +147,26 @@ namespace NewFBP.HelperClasses
             bool boolDirPlusFileNamesListExists = true;
 
 
-            //create local Dictionaries
+            //create local Dictionaries DataModels.AppProperties.DirIDNamesDict already created
             Dictionary<string, string> currneDirIDNamesDict = DataModels.AppProperties.DirIDNamesDict;
 
+            //DataModels.AppProperties.DirIDNamesDict already exists
             Dictionary<string, string> currentDirIDNamesDict = DataModels.AppProperties.DirIDNamesDict;
 
-            Dictionary<string, string> currentFileInfoDict = new Dictionary<string, string>();
+            Dictionary<string, string> currentFileVersionDict = new Dictionary<string, string>();
+            if (DataModels.AppProperties.FileVersionDict != null)
+            {
+                currentFileVersionDict = DataModels.AppProperties.FileVersionDict;
+            }
 
-            if (DataModels.AppProperties.FileInfoDict != null) 
-            { currentFileInfoDict = DataModels.AppProperties.FileInfoDict; }
-
-            //create local Lists
+            //create local Lists DataModels.AppProperties.ListOfAllFilePaths already exists
             List<string> currentListOfAllFilePaths = DataModels.AppProperties.ListOfAllFilePaths;
 
 
             //SECTION DEALING WITH THE CREATION OFcurrentB26NamesList
             List<string> currentB26NamesList = new List<string>();
-
             if (DataModels.AppProperties.B26FileNamesList != null)
-            { currentB26NamesList = DataModels.AppProperties.B26FileNamesList;}
+            { currentB26NamesList = DataModels.AppProperties.B26FileNamesList;}            
 
             //SECTION DEALING WITH THE CREATION OF currentFileNamesList
             List<string> currentFileNamesList = new List<string>();
@@ -190,40 +183,48 @@ namespace NewFBP.HelperClasses
             string root = DataModels.AppProperties.RootDirectory;
             string currntFilePath = String.Empty;
             string currentFileName = String.Empty;
-            string fileInfoKey = String.Empty;
+            string fileVersionDictKey = String.Empty;
 
-            //create local string arrays
+            //create local string arrays DataModels.AppProperties.ListOfAllFilePaths already exists
             string[] currentListOfAllFilePathsArr = DataModels.AppProperties.ListOfAllFilePaths.ToArray();
 
 
 
             /* Iterate thru currentListOfAllFilePathsArr getting the currntFilePath
              * and the currentFileName
-             * 
-             * 
-             * 
             */
             for (int i = 0; i < currentListOfAllFilePathsArr.Length; i++)
             {                
                 currntFilePath = currentListOfAllFilePathsArr[i];//"C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion\\Articles List.docx"
+ 
                 shortDirName = currntFilePath.Replace(root, "");
+
                 currentFileName = Path.GetFileName(currntFilePath);//"Articles List.docx"
+
                 shortDirName = shortDirName.Replace(currentFileName, "");
 
                 if (!currentFileNamesList.Contains(currentFileName))
                 {
+                    //This is a new file
+
                     // add currentFileName to currentFileNamesList
                     currentFileNamesList.Add(currentFileName);
+                    
                     //create a new B26FileName
-                    currentB26FileName = HelperClasses.StringHelper.ConvertToBase26(currentFileCntr);
+                    currentB26FileName = HelperClasses.StringHelper.ConvertToBase26(currentFileCntr);//"AAA"
+
                     currentFileCntr++;
+
                     currentB26NamesList.Add(currentB26FileName);
 
                     if (currentDirIDNamesDict.ContainsKey(shortDirName))
                     {
-                        dirIntName = currentDirIDNamesDict[shortDirName];
-                        fileInfoKey = dirIntName + '.' +currentFileName;
-                        currentFileInfoDict.Add(fileInfoKey, "0");
+                        dirIntName = currentDirIDNamesDict[shortDirName];//"0"
+
+                        //I need to change fileInfoKey to fileVersionDictKey 
+                        fileVersionDictKey = dirIntName + '.' +currentFileName;// "0.Articles List.docx"
+
+                        currentFileVersionDict.Add(fileVersionDictKey, "0");
                     }
                 }
 
@@ -236,83 +237,76 @@ namespace NewFBP.HelperClasses
             DataModels.AppProperties.B26FileNamesList = currentB26NamesList;
 
             // Update fileInfoDict
-            DataModels.AppProperties.FileInfoDict = currentFileInfoDict;
+            DataModels.AppProperties.FileVersionDict = currentFileVersionDict;
 
             //return the updated currentFileCntr
             DataModels.AppProperties.FileCntr = currentFileCntr;
         }// end CreateB26NamesList
 
-        private static void OldCreateDirIDNamesDict()
-        {
-            //local strings
-            string shortDirName = string.Empty;//"Religion\\"
-            string dirIntName = string.Empty;//"0"
-            string dirIDplusFileName = string.Empty;
-            string currntFilePath = string.Empty;
-            string currentFileName = string.Empty;
-            string root = DataModels.AppProperties.RootDirectory;
-            string currentB26FileName = string.Empty;
-            string currentFilePath = string.Empty;
-
-            //create local Dictionaries
-            Dictionary<string, string> currnetDirIDNamesDict = new Dictionary<string, string>();
-            if (DataModels.AppProperties.DirIDNamesDict != null)
-            { currnetDirIDNamesDict = DataModels.AppProperties.DirIDNamesDict; }
-                       
-
-            //local arrays
-            // create a local varialbe to hold the simple file name
-            string[] currentListOfAllFilePathsArr = DataModels.AppProperties.ListOfAllFilePaths.ToArray();
-            //currentListOfAllFilePathsArr[0] = "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion\\Articles List.docx"
- 
-            //local Lists
-            List<string> currentB26FileNameList = DataModels.AppProperties.B26FileNamesList;
-
-            //iterate thru currentListOfAllFilePathsArr to update currneDirIDNamesDict 
-            for (int i = 0; i < currentListOfAllFilePathsArr.Length; i++)
-            {
-                currentFilePath = currentListOfAllFilePathsArr[i];//"C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion\\Articles List.docx"
-                // replace root
-                currentFilePath = currentFilePath.Replace(root, "");//"Religion\\Articles List.docx"
-                currentFileName = Path.GetFileName(currentFilePath);//"Articles List.docx"
-                shortDirName = currentFilePath.Replace(currentFileName, "");//"Religion\\"
-
-                //currnetDirIDNamesDict[shortDirName] = {[Religion\, 0]}
-
-
-                /*
-                 * At this point I have the shortDirName "Religion\\" but I need to see if it is a;ready in the
-                 * currnetDirIDNamesDic as a Key and if, get its value. If it isn't then I need to create a
-                 * new entry into the currnetDirIDNamesDic and set its value to the currentDirCntr converted to a 
-                 * string
-                 */
-
-                //first check to see if currnetDirIDNamesDict is not null, it it isn't see if it has a Key of shortDirName
-                string newKey = String.Empty;
-                string newValue = String.Empty;
-                if (currnetDirIDNamesDict != null)
-                {
-                    //  if currnetDirIDNamesDict doesn't contains a Key of shortDirName then add a new entry
-                    if (!currnetDirIDNamesDict.ContainsKey(shortDirName))
-                    {
-                        newKey = shortDirName;
-                        newValue = currentDirCntr.ToString();
-                        currnetDirIDNamesDict.Add(newKey, newValue);
-                        currentDirCntr++;
-                    }
-                }
-              
-            }// end //iterate thru currentListOfAllFilePathsArr to update currneDirIDNamesDict
-
-            //update DirDictNames
-            DataModels.AppProperties.DirIDNamesDict = currnetDirIDNamesDict;
-        }//end OldCreateDirIDNamesDict()
-
         
+
+        private static void CreateFileLengthDict()
+        {
+            /*
+         * FileFetchDict, a dictionary whose Key if the full path to a file and whose Value is Base26File# 
+         * {FilePath,Base26File#} eg. {"C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx",AAA) 
+         * this will be used to get the file to be copied to the Repository Backup folder and the Value (the Base26File#) 
+         * will be used to search the CurrentVersionDict to the the current version number so it can be incemented and 
+         * applied to the Base26File as the name of the current version of the file in the Repository Backup folder. 
+         * eg. the file named AAA.0 will contain the first version of the file 
+         * "C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx"
+         */
+
+            //Create a local copy of DataModels.AppProperties.FileFetchDict
+            Dictionary<string,string> currentFileFetchDict = new Dictionary<string,string>();
+            if (DataModels.AppProperties.FileFetchDict != null) 
+            { currentFileFetchDict = DataModels.AppProperties.FileNamesDict;  }
+
+            //Create an arryal that holds all of the paths to the files in the root directory
+            string[] filePathsArray = DataModels.AppProperties.ListOfAllFilePaths.ToArray();
+
+            /*
+             Iterate thur filePathsArray and get a full path to a file
+            test to see if that file exists
+            if it does get tis file length
+            set the Key to the FileFetchDict to the filePath
+            set the value to the FileFetchDict to the length converted to a string
+             */
+            string currentFilePath = String.Empty;
+            string fileFetchDictKey = String.Empty;
+            string fileFetchDictValye = String.Empty;
+
+            for (int i = 0; i < filePathsArray.Length; i++)
+            {
+                currentFilePath = filePathsArray[i];
+                if(!currentFileFetchDict.ContainsKey(currentFilePath))
+                {
+                    fileFetchDictKey = currentFilePath;
+                    FileInfo fileInfo = new FileInfo(currentFilePath);
+                    long fileLength = fileInfo.Length;
+                    currentFileFetchDict.Add(currentFilePath, fileLength.ToString());
+                }//end does the current fileFetchDict contain the current file path as a key
+
+            }// end interate through filePathsArr and creat entries toFileFetchDict
+
+            //Update the FileFetchDict
+            DataModels.AppProperties.FileFetchDict = currentFileFetchDict;
+        }// end private static void CreateFileLengthDict()
+
+
 
         // create a dictionary that holds {ShortDirName,DirIntName]
         private static void CreateDirIDNamesDict()
         {
+            //QUESTION QUESTION do I need currentFileLengthDict here since I created it earlies
+
+            Dictionary<string,string> currentFileLengthDict = new Dictionary<string,string>();
+
+            if (DataModels.AppProperties.FileNamesDict != null) 
+            {
+                currentFileLengthDict = DataModels.AppProperties.FileNamesDict;   
+            }
+
             /*currentDirIDNamesDict 
              * is created from DataModels.AppProperties.DirIDNamesDict if it is not null
              * if it is null then instantiate the new local dictionary  currentDirIDNamesDict*/
@@ -325,14 +319,14 @@ namespace NewFBP.HelperClasses
                 Dictionary<string, string> currentDirIDNamesDict = new Dictionary<string,string>(); 
             }
 
-            //Create the currentFileInfoDictionary from the global if it exists and as a local if it doesn't
-            if (DataModels.AppProperties.FileInfoDict != null)
+            //Create the currentFileLengthDictionary from the global if it exists and as a local if it doesn't
+            if (DataModels.AppProperties.FileLengthDict != null)
             {
-                currentFileInfoDict = DataModels.AppProperties.FileInfoDict;
+                currentFileLengthDict = DataModels.AppProperties.FileLengthDict;
             }
             else
             {
-                currentFileInfoDict = new Dictionary<string, string>();
+                currentFileLengthDict = new Dictionary<string, string>();
             }
             //get the source root directour
             string root = DataModels.AppProperties.RootDirectory;

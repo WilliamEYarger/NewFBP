@@ -81,7 +81,7 @@ namespace NewFBP.DataModels
 
         //FileNamesDict
         public static Dictionary<string, string> FileNamesDict { get; set; }
-        //FileInfoDict
+        //FileLengthDict
         /*
          * FileFetchDict, a dictionary whose Key if the full path to a file and whose Value is Base26File# 
          * {FilePath,Base26File#} eg. {"C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx",AAA) 
@@ -91,10 +91,10 @@ namespace NewFBP.DataModels
          * eg. the file named AAA.0 will contain the first version of the file 
          * "C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx"
          */
-        public static Dictionary<string, string> FileInfoDict { get; set; }
+        public static Dictionary<string, string> FileLengthDict { get; set; }
 
         /*
-            OldFileFetchDict, a dictionary whose key if the full path to a file and whose value is Base26File# 
+            FileFetchDict, a dictionary whose key if the full path to a file and whose value is Base26File# 
             [FilePath,Base26File#} eg. {"C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx",AAA) 
             this will be used to get the file to be copied to the Repository Backup folder and the Value (the Base26File#)
             will be used to search the CurrentVersionDict to the the current version number so it can be incemented and 
@@ -102,10 +102,16 @@ namespace NewFBP.DataModels
             eg. the file named AAA.0 will contain the first version of the file
             "C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx"
          */
-        public static Dictionary<string, string> OldFileFetchDict { get; internal set; }
+        public static Dictionary<string, string> FileFetchDict { get; internal set; }
 
 
         public static Dictionary<string, string> OldCurrentVersionDict { get; internal set; }
+        /*FileVersionDict
+         * The FileVersionDict Key is the abbreviated file name which consists of a file’s DirID name 
+         * found in the  DirIDNamesDict   + ‘.’ + its B26 file name found in the B26FileNamesList.  
+         * Its Value is its current version number, which on startup will be ‘0’.         
+         */
+        public static Dictionary<string,string> FileVersionDict { get; set; }
         #endregion Dictionaries
 
         #region Integers

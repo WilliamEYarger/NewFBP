@@ -239,3 +239,7 @@ Step 3. determine what files will be stored in the SourceBackup folder:
 
 branch 4  in CreateB26NameList() sucessfulls creates and updates FileNamesList, B26FileNamesList,  FileInfoDict
     and FileCntr in AppProperties
+Committed branch 4 20250327
+Committ message
+Changed FileInfoDict to FileFetchDict
+Created FileLengthDict
