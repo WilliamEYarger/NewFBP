@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿    using System.IO;
 using System.Windows;
 using System;
 using System.Collections.Generic;
@@ -6,12 +6,32 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using System.Diagnostics.Eventing.Reader;
+using System.Data;
+using System.Windows.Forms;
+using System.Windows.Shapes;
+using static System.Windows.Forms.LinkLabel;
 
 
 namespace NewFBP.HelperClasses
 {
         public static class GetfileNamesAndPaths
     {
+        /*TOC
+         *  CreateCombinrDirList();
+         *  CreateShortDirNamesList(); 
+         *  CreateListOfAllFiles();
+         *  CreateDirIDNamesDict();
+         *  CreateB26NameListAndFileLengthDict();
+         *  CreateFileLengthDict();
+         *  
+         *  private static void CreateCombinrDirList() 
+         *  private static void CreateShortDirNamesList()
+         *  private static void CreateListOfAllFiles() 
+         *  private static void CreateDirIDNamesDict()
+         *  private static void CreateB26NameListAndFileLengthDict() 
+         *  private static void CreateFileLengthDict() 
+         */
+
         #region properties
 
         //Lists
@@ -27,6 +47,8 @@ namespace NewFBP.HelperClasses
         private static string[] currentArrOfDirectories = new string[0];
         private static string[] AllDirectories = new string[0];
         private static string[] allOtherDirectories = new string[0];
+
+        private static string currntFilePath = String.Empty;
 
         //integers
         private static int currentDirCntr = 0;
@@ -86,10 +108,23 @@ namespace NewFBP.HelperClasses
             CreateDirIDNamesDict();//DONE
 
             //Create private static voide Create B26NameList() {}
-            CreateB26NameList();//DONE
+            CreateB26NameListAndFileLengthDict();//DONE
 
             //Create a dictionary that holds  {"C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx",AAA) 
             CreateFileLengthDict();
+
+            // Create CurrentCntrValues and save it
+            string currentCntrValues = DataModels.AppProperties.DirCntr.ToString()+'~'+
+                DataModels.AppProperties.FileCntr.ToString();
+            DataModels.AppProperties.CurrentCntrValues = currentCntrValues;
+            //write current cntr values to disk
+            HelperClasses.FileIOClass.WriteString(currentCntrValues, "CurrentCntrValues");
+
+
+
+            //Save all of the relevant files to disk
+           // SaveFilesToDisk();
+
         }// end ProcdessSourceFiles
 
 
@@ -132,7 +167,7 @@ namespace NewFBP.HelperClasses
          * to create the B26NamesList I need to cycle through the DataModels.AppProperties.ListOfAllFilePaths = 
          * listOfAllFilePaths;   
          */
-        private static void CreateB26NameList() 
+        private static void CreateB26NameListAndFileLengthDict() 
         {
            //SET local variables to Global properties if they exist and if not set booleans
             //create a local currentFileCntr
@@ -176,12 +211,18 @@ namespace NewFBP.HelperClasses
                 currentFileNamesList = DataModels.AppProperties.FileNamesList;
             }
 
+            //SECTION DEALING WITH FileLengthDict
+            Dictionary<string,string> currentFileLengthDict = new Dictionary<string,string>();
+            if(DataModels.AppProperties.FileLengthDict != null)
+            { currentFileLengthDict = DataModels.AppProperties.FileLengthDict; }
+
+
             //create local strings
             string shortFileName = String.Empty; //Articles.docx
             string shortDirName = String.Empty; // Relibion\
             string dirIntName = String.Empty;  //0
             string root = DataModels.AppProperties.RootDirectory;
-            string currntFilePath = String.Empty;
+            //string currntFilePath = String.Empty;
             string currentFileName = String.Empty;
             string fileVersionDictKey = String.Empty;
 
@@ -199,7 +240,7 @@ namespace NewFBP.HelperClasses
  
                 shortDirName = currntFilePath.Replace(root, "");
 
-                currentFileName = Path.GetFileName(currntFilePath);//"Articles List.docx"
+                currentFileName = System.IO.Path.GetFileName(currntFilePath);//"Articles List.docx"
 
                 shortDirName = shortDirName.Replace(currentFileName, "");
 
@@ -221,12 +262,19 @@ namespace NewFBP.HelperClasses
 
                     currentB26NamesList.Add(currentB26FileName);
 
+                    //get length of current file and create a new entry in currentFileLengthDict
+
+                    //get all of the  info about the current file
+                    FileInfo fileInfo = new FileInfo(currntFilePath);
+                    long fileLength = fileInfo.Length;
+                    currentFileLengthDict.Add(currentB26FileName, fileLength.ToString());
+
                     if (currentDirIDNamesDict.ContainsKey(shortDirName))
                     {
                         dirIntName = currentDirIDNamesDict[shortDirName];//"0"
 
                         //I need to change fileInfoKey to fileVersionDictKey 
-                        fileVersionDictKey = dirIntName + '.' +currentFileName;// "0.Articles List.docx"
+                        fileVersionDictKey = currentFileName;// "0.Articles List.docx"
 
                         currentFileVersionDict.Add(fileVersionDictKey, "0");
                     }
@@ -236,15 +284,25 @@ namespace NewFBP.HelperClasses
 
             //update FileNamesList
             DataModels.AppProperties.FileNamesList = currentFileNamesList;
+            //write to output 
+            //HelperClasses.FileIOClass.saveDicrionary()
 
             // Update DataModels.AppProperties.B26FileNamesList
             DataModels.AppProperties.B26FileNamesList = currentB26NamesList;
+            // write to disk
+            HelperClasses.FileIOClass.SaveList(currentB26NamesList, "B26FileNamesList");
 
             // Update fileInfoDict
             DataModels.AppProperties.FileVersionDict = currentFileVersionDict;
+            HelperClasses.FileIOClass.saveDicrionary(currentFileVersionDict, "FileVersionDict");
 
-            //return the updated currentFileCntr
-            DataModels.AppProperties.FileCntr = currentFileCntr;
+
+            // Update 
+            DataModels.AppProperties.FileLengthDict = currentFileLengthDict;
+            //write to dick
+            HelperClasses.FileIOClass.saveDicrionary(currentFileLengthDict, "FileLengthDict ");
+           //return the updated currentFileCntr
+           DataModels.AppProperties.FileCntr = currentFileCntr;
         }// end CreateB26NamesList
 
         
@@ -264,10 +322,15 @@ namespace NewFBP.HelperClasses
             //Create a local copy of DataModels.AppProperties.FileFetchDict
             Dictionary<string,string> currentFileFetchDict = new Dictionary<string,string>();
             if (DataModels.AppProperties.FileFetchDict != null) 
-            { currentFileFetchDict = DataModels.AppProperties.FileNamesDict;  }
+            { currentFileFetchDict = DataModels.AppProperties.FileFetchDict; }
 
             //Create an arryal that holds all of the paths to the files in the root directory
             string[] filePathsArray = DataModels.AppProperties.ListOfAllFilePaths.ToArray();
+
+
+            //create  an array of B26 file names
+            string[] B26FileNameArr = DataModels.AppProperties.B26FileNamesList.ToArray();
+
 
             /*
              Iterate thur filePathsArray and get a full path to a file
@@ -278,7 +341,7 @@ namespace NewFBP.HelperClasses
              */
             string currentFilePath = String.Empty;
             string fileFetchDictKey = String.Empty;
-            string fileFetchDictValye = String.Empty;
+            string fileFetchDictValue = String.Empty;
 
             for (int i = 0; i < filePathsArray.Length; i++)
             {
@@ -286,15 +349,21 @@ namespace NewFBP.HelperClasses
                 if(!currentFileFetchDict.ContainsKey(currentFilePath))
                 {
                     fileFetchDictKey = currentFilePath;
-                    FileInfo fileInfo = new FileInfo(currentFilePath);
-                    long fileLength = fileInfo.Length;
-                    currentFileFetchDict.Add(currentFilePath, fileLength.ToString());
+
+                    // the value is the B26FileName
+                    fileFetchDictValue = B26FileNameArr[i];
+
+                    //Add a new value to currentFileFetchDic
+                    currentFileFetchDict.Add(fileFetchDictKey, fileFetchDictValue);
+
                 }//end does the current fileFetchDict contain the current file path as a key
 
             }// end interate through filePathsArr and creat entries toFileFetchDict
 
             //Update the FileFetchDict
             DataModels.AppProperties.FileFetchDict = currentFileFetchDict;
+            //Save to disk
+            HelperClasses.FileIOClass.saveDicrionary(currentFileFetchDict, "FileFetchDict");
         }// end private static void CreateFileLengthDict()
 
 
@@ -372,7 +441,7 @@ namespace NewFBP.HelperClasses
             }//end for (int i = 0; i<combinedDirPathArr.Length; i++)
 
             DataModels.AppProperties.DirIDNamesDict = currentDirIDNamesDict;
-            string stophere = "";
+            DataModels.AppProperties.DirCntr = currentDirCntr;
         }
 
         //Create a list that contains the paths to all of the files in the root directory and its subdirectories
@@ -427,7 +496,7 @@ namespace NewFBP.HelperClasses
             //iterate thru listOfAllFilePaths and create a list of shortFileNames and if 
             foreach (string file in listOfAllFilePaths)
             {
-                shortFileName = Path.GetFileName(file);
+                shortFileName = System.IO.Path.GetFileName(file);
                 listOfShortFileNames.Add(shortFileName);
             }
 
@@ -553,7 +622,7 @@ namespace NewFBP.HelperClasses
                 //Display file names and paths
                 foreach (string file in FilePathArray)
                 {
-                    string fileName = Path.GetFileName(file);
+                    string fileName = System.IO.Path.GetFileName(file);
                     FilePathList.Add(file);
                     FileNameList.Add(fileName);//delet
                 }
@@ -577,10 +646,10 @@ namespace NewFBP.HelperClasses
                 string[] FileNamesArray = FileNameList.ToArray();
                 string[] FilePathArray = FilePathList.ToArray();
                 //Get the path to the folder where the data will be stored
-                string fileOutputPath = DataModels.AppProperties.StoragePath;
+                string fileOutputPath = DataModels.AppProperties.StoragePath;//??? may not be defined
                 //get tne name of the output file names
-                string fileNamePath = DataModels.AppProperties.FileNamesPath;
-                string filePathsPath = DataModels.AppProperties.FilePathsPath;
+                string fileNamePath = DataModels.AppProperties.FileNamesPath;//??? may not be defined
+                string filePathsPath = DataModels.AppProperties.FilePathsPath;//??? may not be defined
 
                 //Write the file names to ReligionFileName
                 using (StreamWriter writer = new StreamWriter(fileNamePath))
@@ -613,7 +682,7 @@ namespace NewFBP.HelperClasses
             string[] FileVariables = new string[2];
 
             //Get the name of the current file
-            string currentFileName = Path.GetFileName(filePath);
+            string currentFileName = System.IO.Path.GetFileName(filePath);
             FileVariables[0] = currentFileName;
 
             // get the abbreviated directory name
@@ -628,6 +697,56 @@ namespace NewFBP.HelperClasses
             return FileVariables;
         }//end method private static string[] GetFileVariables(string filePath)
         #endregion GetFileVariables
+
+        private static void SaveFilesToDisk()
+
+        {
+            string outputFileLengthDictStr = String.Empty;
+            string currentKey = String.Empty;
+            string currentValue = String.Empty;
+            string filePath = String.Empty;
+
+
+
+            // Save FileLengthDict
+            filePath = DataModels.AppProperties.StoragePath + "FileLengthDict.txt";
+            Dictionary<string,string> currentFileLengthDict = DataModels.AppProperties.FileLengthDict;
+
+            //create a List<string> to hold the output list and then convert the list to an array to write it
+            List<string> outputStringsList = new List<string>();
+            string[] outputStringArr = null;
+
+            foreach (KeyValuePair<string,string> kvp in currentFileLengthDict) 
+            {
+                currentKey = kvp.Key;
+                currentValue = kvp.Value;
+                outputFileLengthDictStr = currentKey + "~" + currentValue;
+                outputStringsList.Add(outputFileLengthDictStr);
+            }
+
+            //convert the list to an array
+            outputStringArr = outputStringsList.ToArray();
+
+            //write out this array
+
+            using (StreamWriter writer = new StreamWriter(filePath, append: false)) // append: false overwrites the file
+            {
+                string line = String.Empty;
+                for(int i = 0; i < outputStringArr.Length; i++)
+                {
+                    line = outputStringArr[i];
+                    writer.WriteLine(line);
+
+                }
+
+                //// Write individual lines to the file
+                //writer.WriteLine("This is the first line.");
+                //writer.WriteLine("This is the second line.");
+                //writer.WriteLine("This is the third line.");
+            }
+
+        }//end private static void SaveFilesToDisk()
+
 
     }//end public static class GetfileNamesAndPaths
 

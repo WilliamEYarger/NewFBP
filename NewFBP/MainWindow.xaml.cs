@@ -59,7 +59,7 @@ namespace NewFBP
                  * can only be compared if I strip off the roots
                  */
                 string sourceRootDirectory = sourcePath.Replace(SourceName, "");
-                DataModels.AppProperties.RootDirectory = sourceRootDirectory;
+                 DataModels.AppProperties.RootDirectory = sourceRootDirectory;
 
                 // Store the complete path to the source directory
                 DataModels.AppProperties.CurrentSourcePath = sourcePath;
@@ -68,11 +68,9 @@ namespace NewFBP
                 DataModels.AppProperties.CurrentSourceName = SourceName;
 
                 // Create the root directory name from SourceName+'\\'
-                string currentSourceName = SourceName ;
+                string currentSourceName = SourceName + '\\';// CORRECTED ERERRORROE DID NOT ADD \\
                 DataModels.AppProperties.SourceDirectory = currentSourceName;
-
-                /*Create a path to a storage directory from the sourceRootDirectory and the SourceName+"Backup"
-                 * check to see if it exists and if it doesn't create it.
+                /*Create a path to a storage directo\ry \oesn't create it.
                  * 
                  */
                 string sourceBackupDirPath = sourceRootDirectory+SourceName + "Backup";
@@ -82,9 +80,18 @@ namespace NewFBP
                 {
                     // Create the directory if it does not exist
                     Directory.CreateDirectory(sourceBackupDirPath);
+
+                    // save the name of the backup folder
+                    DataModels.AppProperties.SourceBackupDirPath = sourceBackupDirPath+'\\';
+                    HelperClasses.FileIOClass.sourceBackupDirPath = sourceBackupDirPath + '\\';
                 }
                 else
                 { // Get all of the old files
+
+
+                    // save the name of the backup folder
+                    DataModels.AppProperties.SourceBackupDirPath = sourceBackupDirPath + '\\';
+                    HelperClasses.FileIOClass.sourceBackupDirPath = sourceBackupDirPath + '\\';
 
                     #region Get the DirCntr and FileCntr
                     // Get the DirCntr and FileCntr
@@ -163,7 +170,10 @@ namespace NewFBP
 
                         //CHANGED OldFileNamesDict  TO currentFileNamesDict
                         Dictionary<string, string> currentFileNamesDict = new Dictionary<string, string>();
-                     //   if(DataModels.AppProperties.)
+
+                        /*
+                            the filePath file does not exist on the first run
+                         */
                         // see if filePath file exists and if it does get it else create a new currentFileNamesDict
                         if (File.Exists(filePath))
                         {
@@ -179,30 +189,30 @@ namespace NewFBP
                         }
                         #endregion get OldFileNamesDict
 
-                    #region get FileInfoDict
-                        // get FileLengthDict
-                        filePath = sourceBackupDirPath + '.' + "CurrentFileInfoDict.txt";
-                        //create a string array to hold the lines of the "CurrentFileInfoDict.txt file
-                        string[] currentFileInfoDict;
+                    //#region get FileInfoDict
+                    //    // get FileLengthDict
+                    //    filePath = sourceBackupDirPath + '.' + "CurrentFileInfoDict.txt";
+                    //    //create a string array to hold the lines of the "CurrentFileInfoDict.txt file
+                    //    string[] currentFileInfoDict;
 
-                        //create a dictionary to hold the Keyvalue pairs of FileLengthDict
-                        Dictionary<string, string> OldFileInfoDict = new Dictionary<string, string>();
+                    //    //create a dictionary to hold the Keyvalue pairs of FileLengthDict
+                    //    Dictionary<string, string> OldFileInfoDict = new Dictionary<string, string>();
 
-                        // see if filePath file exists and if it does get it else create a new FileLengthDict
-                        if (File.Exists(filePath))
-                        {
-                            string[] currentFileInfoDictArr = File.ReadAllLines(filePath);
+                    //    // see if filePath file exists and if it does get it else create a new FileLengthDict
+                    //    if (File.Exists(filePath))
+                    //    {
+                    //        string[] currentFileInfoDictArr = File.ReadAllLines(filePath);
 
-                            //cycle thru currentFileInfoDictArr and create FileLengthDict
-                            for (int i = 0; i < currentFileInfoDictArr.Length; i++)
-                            {
-                                string[] KeyValuePairArr = currentFileInfoDictArr[i].Split('~');
-                                OldFileInfoDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
-                            }
-                            DataModels.AppProperties.FileLengthDict = OldFileInfoDict;
-                        }
+                    //        //cycle thru currentFileInfoDictArr and create FileLengthDict
+                    //        for (int i = 0; i < currentFileInfoDictArr.Length; i++)
+                    //        {
+                    //            string[] KeyValuePairArr = currentFileInfoDictArr[i].Split('~');
+                    //            OldFileInfoDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
+                    //        }
+                    //        DataModels.AppProperties.FileLengthDict = OldFileInfoDict;
+                    //    }
 
-                        #endregion FileInfoDict
+                    //    #endregion FileInfoDict
 
                     //#region get FileFetchDict
 
