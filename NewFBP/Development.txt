@@ -8,7 +8,8 @@ Date		name	    Purpose														line
 20250325 committed brance 3 created DirIDNamesDict
 20250326 succesfully created FileNamesList, B26FileNamesList and updated and saved FileCntr   
 202504011000 commit v 5.
-
+202504011014 Master works but there are several unused sections in xaml.cs file
+202504011015 I will create branch 6.WorkWithMovingFiles
 
             
             
