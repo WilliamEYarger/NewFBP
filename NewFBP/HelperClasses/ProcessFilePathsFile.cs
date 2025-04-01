@@ -23,7 +23,7 @@ namespace NewFBP.HelperClasses
 
             string[] lines = File.ReadAllLines(inputFilePath);
 
-            string root = DataModels.AppProperties.SourceRootDirectory;
+            string root = DataModels.AppProperties.SourceRootDirectory;//??? may not be defined
             string dirName;
             string compositFileName;
             string currentDirKey = "";

@@ -1,15 +1,15 @@
 ﻿Directory of Updated
 Date		name	    Purpose														line
 20250313	master		Original stem from Chat GPR	Created a new solution called NewFBP from BackupApp								23		
-20250316    Branch 2.ProcessFilePathsFile Location line 220
-20250320    3.NewOutputSite branch created at line 223
+20250316    Branch 2.ProcessFilePathsFile Location line 230
+20250320    3.NewOutputSite branch created at line 234
 2025022     3.NewOutputSite branch updated to create allFilePathsList (which contains the paths of all files) and 
             combinedDirArr (contains the paths to all the directories) 
 20250325 committed brance 3 created DirIDNamesDict
 20250326 succesfully created FileNamesList, B26FileNamesList and updated and saved FileCntr   
-202503271148
-Committ message solved the problem in that the various output files related to files didn't have the same count
-            
+202504011000 commit v 5.
+
+
             
             
 
@@ -262,4 +262,3 @@ Created FileLengthDict
 202503311253 committed 5.Save-needed-Files
 202504010545 Develop read from disk all text files in the backup storage site successfully read into properties
 202504010734 committ
-202504010815 commit master

@@ -34,6 +34,8 @@ namespace NewFBP.DataModels
          */
         public static string CurrentSourcePath { get; set; }
 
+        /*MAY NOT BE NEDED
+         */
         public static string FileNamesPath { get; set; }// the name of the file that holds the FileNames
 
         public static string FilePathsPath { get; set; }// the name of the file that holds the file paths
@@ -57,13 +59,20 @@ namespace NewFBP.DataModels
          */
         public static string  RootDirectory { get; set; }
 
-        /* the SourceBackupDirPath is to path the folder where the source backup data will be stored
+        /* the SourceBackupDirPath is to path the folder where the source backup data will be store
+         * it includes the terminal \\
          * 
          */
         public static string  SourceBackupDirPath { get; set; }
 
-        public static string CurrentFilesPath { get; set; }
+
         #endregion strings
+
+        /*CurrentCntrValues
+         * this is a single strin that contains the DirCntr to sting + '~' +FileCntr
+         */
+        public static string CurrentCntrValues { get; set; }
+
 
         #region Dictionaries
 
@@ -81,16 +90,13 @@ namespace NewFBP.DataModels
 
         //FileNamesDict
         public static Dictionary<string, string> FileNamesDict { get; set; }
-        //FileLengthDict
+
+
         /*
-         * FileFetchDict, a dictionary whose Key if the full path to a file and whose Value is Base26File# 
-         * {FilePath,Base26File#} eg. {"C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx",AAA) 
-         * this will be used to get the file to be copied to the Repository Backup folder and the Value (the Base26File#) 
-         * will be used to search the CurrentVersionDict to the the current version number so it can be incemented and 
-         * applied to the Base26File as the name of the current version of the file in the Repository Backup folder. 
-         * eg. the file named AAA.0 will contain the first version of the file 
-         * "C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx"
+         FileLengthDict
+        the Key is the B26Name and the value is the file length
          */
+
         public static Dictionary<string, string> FileLengthDict { get; set; }
 
         /*
@@ -128,7 +134,7 @@ namespace NewFBP.DataModels
         //creat a list that holds B26FileNamesList
         public static List<string> B26FileNamesList { get; set; }
         //create a list that contines DirName.FileName "0.Religion\"
-        public static List<string> DirPlusFileNamesList { get; set; }
+        public static List<string> DirPlusFileNamesList { get; set; } //NOT DEFINED
 
         // create a list that contains the simple file names
         public static List<string> FileNamesList { get; set; }
@@ -148,7 +154,7 @@ namespace NewFBP.DataModels
         //create a list of short file name
         public static List<string> ListOfShortFileNames { get; set; }
 
-        public static List<string> ListOfAll26Names { get; set; }
+        public static List<string> ListOfAll26Names { get; set; }//NOT DEFINED
 
         #endregion Lists
     }//end 
