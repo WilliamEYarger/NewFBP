@@ -262,3 +262,5 @@ Created FileLengthDict
         I have succesfully saved: B26FileNamesList.txt, CurrentCntrValues.txt, FileFetchDict.txt, FileLengthDict .txt
              and FileVersionDict.txt
 202503311253 committed 5.Save-needed-Files
+202504010545 Develop read from disk all text files in the backup storage site successfully read into properties
+202504010734 committ
