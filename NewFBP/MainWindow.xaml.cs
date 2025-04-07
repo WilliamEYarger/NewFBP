@@ -33,7 +33,9 @@ namespace NewFBP
 
         private void SelectFolderButton_Click(object sender, RoutedEventArgs e)
         {
-          
+          /*
+           Selecte the source folder
+           */
 
             CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
@@ -56,23 +58,34 @@ namespace NewFBP
                  * so that the properties of a directorr in the source can be compared to 
                  * a directory in the storage site.
                  * For example if the source directory path is "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion"
-                 * and I want to compare it to the directory whose path is "D:\\ReligionBackup\\DirIDNamesDict\\Religion" they 
-                 * can only be compared if I strip off the roots
+                 * and I want to compare it to the directory whose path is "D:\\ReligionBackup\\DirIDNamesDict\\Religion" 
+                 * they can only be compared if I strip off the roots.
+                 * For the Religion source the sourceRootDirectory is "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\"
                  */
                 string sourceRootDirectory = sourcePath.Replace(SourceName, "");
                  DataModels.AppProperties.RootDirectory = sourceRootDirectory;
 
-                // Store the complete path to the source directory
+                // Store the complete path to the source directory 
+                //ie "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion"
                 DataModels.AppProperties.CurrentSourcePath = sourcePath;
 
-                //store the Name of the current source directory
+                //store the Name of the current source directory "Religion"
                 DataModels.AppProperties.CurrentSourceName = SourceName;
 
-                // Create the root directory name from SourceName+'\\'
-                string currentSourceName = SourceName + '\\';// CORRECTED ERERRORROE DID NOT ADD \\
+                // Create the root directory name from SourceName+'\\' ="Religion\\"
+                string currentSourceName = SourceName + '\\';
                 DataModels.AppProperties.SourceDirectory = currentSourceName;
-                /*Create a path to a storage directo\ry \oesn't create it.
+
+
+                /* Create a new directory to hold all of the files necessary to 
+                 * determine if a new dirctory or file has been added, or 
+                 * a file has changed its length since the last backup.
                  * 
+                 * !!! the name of this folder will be the same as that of the Source with the
+                 * word Backup and a file seperator appended, ie ReligionBackup\\
+                 * These values will be saved to the disk during creation and retrieved when
+                 * the source has been chosed !!! MAKE SURE THIS IS DONE!!!
+                 * "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\ReligionBackup\\"
                  */
                 string sourceBackupDirPath = sourceRootDirectory+SourceName + "Backup"+'\\';
 
@@ -95,6 +108,7 @@ namespace NewFBP
 
                     #region Get the DirCntr and FileCntr
                     // Get the DirCntr and FileCntr
+                    // "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\ReligionBackup\\CurrentCntrValues.txt"
                     string filePath = sourceBackupDirPath  + "CurrentCntrValues.txt";
 
                     string[] currentCntrValues;
@@ -104,8 +118,8 @@ namespace NewFBP
                         string delimitedString = currentCntrValues[0];
                         string[] currentCntrValuesArr = delimitedString.Split('~');
 
-                        //get the string value of the DirCntr and convert into an int Dirvalue
-                        
+
+                        //Get the number of dirctories after the last run of the program "259"
                         string numberString = currentCntrValuesArr[0];
                         if (int.TryParse(numberString, out int number))
                         {
@@ -116,8 +130,8 @@ namespace NewFBP
                             MessageBox.Show("Invalid number format.");
                         }
 
-                        //get the string value of the FileCntr and convert into an int FileCntr
-
+                        //get the numer of files detcted in the last run of the program
+                        // ie, the FileCntr, and convert into an int FileCntr
                         numberString = currentCntrValuesArr[1];
                         if (int.TryParse(numberString, out int fileNumber))
                         {
@@ -131,12 +145,24 @@ namespace NewFBP
                         #endregion et the DirCntr and FileCntr
 
                         #region get FileFetchDict 
-                        // get OldDirNamesDict
+                         /* The File Fetch Dictionary
+                            FileFetchDict, a dictionary whose KEY if the full path to a file and whose value is Base26File# 
+                            [FilePath,Base26File#} eg. {"C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles 
+                            List.docx",AAA) this will be used to will be used to search the CurrentVersionDict to the the 
+                            current version number so it can be incemented and applied to the Base26Figet the file to be 
+                            copied to the Repository Backup folder and the Value (the Base26File#)  le as the name of the 
+                            current version of the file in the Repository Backup folder. eg. the file named AAA.0 will 
+                            contain the first version of the file 
+                            "C:\Users\Owner\OneDrive\Documents\Learning\Religion\Articles List.docx"
+                            */
+                        // get the FileFetchDict path
+                        // "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\ReligionBackup\\FileFetchDict.txt"
                         filePath = sourceBackupDirPath + "FileFetchDict.txt";
+
                         //create a string array to hold the lines of the "CurrentDirNamesDict.txt file
                         string[] FileFetchDictArr;
 
-                        //create a dictionary to hold the Keyvalue pairs of OldDirNamesDict
+                        //create a dictionary to hold the Keyvalue pairs of FileFetchDict
                         Dictionary<string, string> currentFileFetchDict = new Dictionary<string, string>();
 
                         // see if filePath file exists and if it does get it else create a new OldDirNamesDict
@@ -144,38 +170,43 @@ namespace NewFBP
                         {
                             FileFetchDictArr = File.ReadAllLines(filePath);
 
-                            //cycle thru currentDirNamesDictArr and create OldDirNamesDict
+                            //cycle thru FileFetchDictArr and create currentFileFetchDict
                             for (int i = 0; i < FileFetchDictArr.Length; i++)
                             {
                                 string[] KeyValuePairArr = FileFetchDictArr[i].Split('~');
                                 currentFileFetchDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
                             }
+                            //Save the currentFileFetchdict to the global property
                             DataModels.AppProperties.FileFetchDict = currentFileFetchDict;
                         }
                         #endregion get OldDirNamesDict
 
                         #region get FileLengthDict 
+                        /*
+                         The FileLength Dictionary has a Key of a file's B26 file name and a VALUE of 
+                        its length at the last run of the program
+                         */
 
-                        // get OldDirNamesDict  CHANGED OldDirNamesDict TO CurrentFileNamesDict
+                        //"C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\ReligionBackup\\FileLengthDict .txt"
                         filePath = sourceBackupDirPath   + "FileLengthDict .txt";
-                        //create a string array to hold the lines of the "CurrentFileNamesDict.txt file
-                        //CHANGED currentFileNamesDict TO currentFileNamesDictArr
+
+                        //create a string array to hold the lines of the currentFileLengthDictArr
                         string[] currentFileLengthDictArr;
 
                         /*
-                         * create a dictionary currentFileNamesDict, to hold XXXXXXXXXXXXXXXXt 
+                         * create a dictionary currentFileNamesDict, to hold FileLengthDict
+                            the Key is the B26Name and the value is the file length
                          * Set it to the global FileNamesDict if it exists, if it doesn't create it 
-                         * 
-                         * CHECK TO SEE WHAT THE GLOBAL
                         */
 
-                        //CHANGED OldFileNamesDict  TO currentFileNamesDict
+                        //Create currentFileLengthDict
                         Dictionary<string, string> currentFileLengthDict = new Dictionary<string, string>();
 
                         /*
                             the filePath file does not exist on the first run
                          */
                         // see if filePath file exists and if it does get it else create a new currentFileNamesDict
+                        //"C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\ReligionBackup\\FileLengthDict .txt"
                         if (File.Exists(filePath))
                         {
                             currentFileLengthDictArr = File.ReadAllLines(filePath);
@@ -186,13 +217,25 @@ namespace NewFBP
                                 string[] KeyValuePairArr = currentFileLengthDictArr[i].Split('~');
                                 currentFileLengthDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
                             }
+
+                            //Save the values of the file length dictionary at the last run of the program
+                            // to the global property
                             DataModels.AppProperties.FileLengthDict = currentFileLengthDict;
                         }
                         #endregion get OldFileNamesDict
 
                         #region get FileVersionDict
+                        /*
+                         * The File Version Dictionary has a KEY is the drive independant name of the file 
+                         * composed of it Directory's IdInt number +'.' plue its file name ie "0.Articles List.docx"
+                         * and a VALUE of of the current version number (initially '0' for all files
+                         */
+
+
                         // get FileLengthDict
+                        // "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\ReligionBackup\\FileVersionDict.txt"
                         filePath = sourceBackupDirPath  + "FileVersionDict.txt";
+
                         //create a string array to hold the lines of the "CurrentFileInfoDict.txt file
                         string[] currentFileVersionDictArr;
 
@@ -210,39 +253,40 @@ namespace NewFBP
                                 string[] KeyValuePairArr = currentFileVersionDictArr[i].Split('~');
                                 currentFileVersionDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
                             }
+
+                            //Save the file version number from the last run of the program the count is = 6732
                             DataModels.AppProperties.FileVersionDict = currentFileVersionDict;
                         }
 
                         #endregion FileInfoDict
 
-                        #region get CurrentVersionDict
+                        #region get DirIDNamesDict
 
 
-                        // get OldCurrentVersionDict
-                        filePath = sourceBackupDirPath + '.' + "CurrentCurrentVersionDict.txt";
-                        //create a string array to hold the lines of the "CurrentCurrentVersionDict.txt file
-                        string[] currentCurrentVersionDict;
+                        // get DirIDNamesDict
+                        filePath = sourceBackupDirPath + "DirIDNamesDict.txt";
+                        //create a string array to hold the lines of the "DirIDNamesDict.txt file
+                        string[] currentDirIDNamesDictArr;
 
                         //create a dictionary to hold the Keyvalue pairs of OldCurrentVersionDict
-                        Dictionary<string, string> OldCurrentVersionDict = new Dictionary<string, string>();
+                        Dictionary<string, string> currentDirIDNamesDict = new Dictionary<string, string>();
 
                         // see if filePath file exists and if it does get it else create a new OldCurrentVersionDict
                         if (File.Exists(filePath))
                         {
-                            string[] currentCurrentVersionDictArr = File.ReadAllLines(filePath);
+                            currentDirIDNamesDictArr = File.ReadAllLines(filePath);
 
                             //cycle thru currentCurrentVersionDictArr and create OldCurrentVersionDict
-                            for (int i = 0; i < currentCurrentVersionDictArr.Length; i++)
+                            for (int i = 0; i < currentDirIDNamesDictArr.Length; i++)
                             {
-                                string[] KeyValuePairArr = currentCurrentVersionDictArr[i].Split('~');
-                                OldCurrentVersionDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
+                                string[] KeyValuePairArr = currentDirIDNamesDictArr[i].Split('~');
+                                currentDirIDNamesDict.Add(KeyValuePairArr[0], KeyValuePairArr[1]);
                             }
-                            DataModels.AppProperties.OldCurrentVersionDict = OldCurrentVersionDict;
+                            DataModels.AppProperties.DirIDNamesDict = currentDirIDNamesDict;
                         }
-                        #endregion  CurrentVersionDict
+                        #endregion  DirIDNamesDict
 
                         #region Get B26FileNamesList.txt
-
 
                         // get OldCurrentVersionDict
                         filePath = sourceBackupDirPath   + "B26FileNamesList.txt";
@@ -259,10 +303,6 @@ namespace NewFBP
                             DataModels.AppProperties.B26FileNamesList = currentB26FileNamesList;
                         }
 
-
-
-
-
                         #endregion Get B26FileNamesList.txt
 
 
@@ -274,10 +314,10 @@ namespace NewFBP
                 GetfileNamesAndPaths.ProcessSourceFiles();
             }// end show dialog
 
-        }// end SelectfolderButton_Click
+        }// end  private void SelectFolderButton_Click
 
 
-      
+
 
         // Helper method to create a file if it doesn't exist
         private void CreateFileIfNotExists(string filePath)

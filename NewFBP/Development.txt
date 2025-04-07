@@ -10,7 +10,7 @@ Date		name	    Purpose														line
 202504011000 commit v 5.
 202504011014 Master works but there are several unused sections in xaml.cs file
 202504011015 I will create branch 6.WorkWithMovingFiles
-
+202504011154 Working with branch 6.WorkWithMovingFiles line 266
             
             
 
@@ -263,3 +263,15 @@ Created FileLengthDict
 202503311253 committed 5.Save-needed-Files
 202504010545 Develop read from disk all text files in the backup storage site successfully read into properties
 202504010734 committ
+202504011154 Working with branch 6.WorkWithMovingFiles line 266
+    Tasks
+    1. I need to save the dictionary which contains the directory path as the Key and the DirIdNum as the value 
+202504060633 Working with 6.WorkwithMovingFiles. I have added   DirIDNamesDict.txt to the files written out
+    The next task is to set up the repository site
+202504070714
+    Although there are existing external disk files the program is not loading them
+    It should do this once it knows what the Source directory is
+202504071013 commit message
+
+Have successfully saved and the needed text files and corrected the errors causing
+duplicstions. I am ready to prepare the Repository in the next branch

@@ -14,7 +14,7 @@ namespace NewFBP.HelperClasses
          * The first task will be to create write to disk procedures
          */
 
-        //Create a local value for the path to the backup folder
+        //Create a local value for the path to the local disk backup folder
         public static string sourceBackupDirPath { get; set; }
 
        
