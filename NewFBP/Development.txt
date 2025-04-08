@@ -315,3 +315,5 @@ Branch 7 Logic
     Repository  developed but I inadvertantly eliminated the methods to save most of the needed files. They Have been restored
 202504080900 Commit updatd Master
 commit Message commit after Branch 7. merged into master
+202504080903 created new branh 8.SaveRenamedFiles from master
+initial commit  8.SaveRenamedFiles from master
