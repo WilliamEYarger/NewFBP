@@ -273,6 +273,43 @@ Created FileLengthDict
     It should do this once it knows what the Source directory is
 202504071013 commit message
 
-Have successfully saved and the needed text files and corrected the errors causing
+Have successfully saved all the needed text files and corrected the errors causing
 duplicstions. I am ready to prepare the Repository in the next branch
 202504071019 successfully merger Branch 6 into master and will commit master
+Branch 7 Logic
+    as soon as I designate a Source branch and create the SourceBackup folder
+    I will check to see if it contains a text file "RepostioryPath" If it does
+    not this is the first run of the program and I will immediately ask the 
+    usee to  select the repository folder and will then construct all of the needed
+    folders. The Repository folder might be something like D:\\Backups. This directory
+    might then hold various differnt backup folders like D:\\Backups\\Religion\\
+    Each individual backup folder will hold a series of text files
+        B26FileNamesList  DONE
+        CurrentCntrValues DONE
+        DirIDNamesDict    DONE
+        FileFetchDict     DONE
+        FileLengthDict   DONE
+        FileVersionDict  DONE
+             It will also have a single subdirectory FileVersions
+             The FileVersions  folder will hold copies of all version
+             of all source files beginning with version '0' They will 
+             be named by combining their individual directory intIDNumber+'.'+FileName+Version#+'.' Extension
+             for example 0.Articles List.0.docx, 0.Articles List.1.docx,etc
+    Once the repository has been setup I will create a text file in the SourceBackup folder 
+    named RepostioryPath.txt Which will contain the path to the repository ie D:\\Backups\\Religion\\
+    I will also set a System Global bool property FirstRun to true. when all of the various files
+    have been processed and stored in the SourceBackup directory I will test to see if FirstRun is true.
+    If it is, all of the files in the SourceBackup folder will be copied to the Repository (D:\\Backups\\Religion\\)
+    I will then copy all of the individual files in the source folder to the D:\\Backups\\Religion\\FileVersions\\
+    folder with each renamed as shown above
+        If FirstRun is false I will then compare the FileLengthDict in the Source to the FileLengthDict in the Repository
+    any file name found in the source, but not in the repository will be a new file and it will be copied as
+    version '0' to the  D:\\Backups\\Religion\\FileVersions\\. any file in the Source which is not the same length
+    as the version in the Repository will be a new Version of an old file. Its fileversion number will be
+    incremented and then the newly incremented named version of the file will be copied to the 
+    D:\\Backups\\Religion\\FileVersions\\ folder. Once all files have been processed
+
+    FirstRun bool created and set to false
+
+    20250408 Commit Message for 7.Prepare_Reposotory
+    Repository  developed but I inadvertantly eliminated the methods to save most of the needed files. They Have been restored

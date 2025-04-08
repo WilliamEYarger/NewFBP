@@ -92,6 +92,22 @@ namespace NewFBP
                 // Check if the directory exists
                 if (!Directory.Exists(sourceBackupDirPath))
                 {
+
+                    /*
+                     If the source directory doesn't exist then this is the First run so set
+                    that to true and ask the user to select the path to the Repositoyr
+                     */
+
+                    DataModels.AppProperties.FirstRun = true;
+
+
+                    //Set up the button to select the Repositoyr
+                    SelectFolderButton.Content = $"Select the Drive and/or folder that will hold Repository";
+
+                    //create a method to select the repository site
+                    CreateRepository(SourceName);
+
+
                     // Create the directory if it does not exist
                     Directory.CreateDirectory(sourceBackupDirPath);
 
@@ -179,7 +195,7 @@ namespace NewFBP
                             //Save the currentFileFetchdict to the global property
                             DataModels.AppProperties.FileFetchDict = currentFileFetchDict;
                         }
-                        #endregion get OldDirNamesDict
+                        #endregion get FileFetchDict
 
                         #region get FileLengthDict 
                         /*
@@ -222,7 +238,7 @@ namespace NewFBP
                             // to the global property
                             DataModels.AppProperties.FileLengthDict = currentFileLengthDict;
                         }
-                        #endregion get OldFileNamesDict
+                        #endregion get FileLengthDic
 
                         #region get FileVersionDict
                         /*
@@ -258,7 +274,7 @@ namespace NewFBP
                             DataModels.AppProperties.FileVersionDict = currentFileVersionDict;
                         }
 
-                        #endregion FileInfoDict
+                        #endregion get FileVersionDict
 
                         #region get DirIDNamesDict
 
@@ -284,7 +300,7 @@ namespace NewFBP
                             }
                             DataModels.AppProperties.DirIDNamesDict = currentDirIDNamesDict;
                         }
-                        #endregion  DirIDNamesDict
+                        #endregion  get DirIDNamesDict
 
                         #region Get B26FileNamesList.txt
 
@@ -305,7 +321,10 @@ namespace NewFBP
 
                         #endregion Get B26FileNamesList.txt
 
-
+                        /*
+                         Create mechanis to get the path to the FRepository from
+                         DataModels.AppProperties.RepostioryPath
+                         */
 
                     }// end if file Exists sourceBackupDirPath + '.' + "CurrentCntrValues.txt"
                 }// end if (!Directory.Exists(sourceBackupDirPath))
@@ -317,7 +336,45 @@ namespace NewFBP
         }// end  private void SelectFolderButton_Click
 
 
+        private void CreateRepository(string SourceName)
+        {
 
+            try
+            {
+                // Prompt the user to select the storage directory
+                CommonOpenFileDialog dialog = new CommonOpenFileDialog
+                {
+                    IsFolderPicker = true,
+                    Title = "Select the folder where repository files should be stored"
+                };
+
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    string Repository  = Path.Combine(dialog.FileName, SourceName );
+
+                    if (!Directory.Exists(Repository))
+                    {
+                        Directory.CreateDirectory(Repository);
+                        string fileVersions = Path.Combine(Repository, "FileVersions\\");
+                        Directory.CreateDirectory(fileVersions);
+                        //MessageBox.Show($"Backup directory created: {backupDirectory}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+
+                    DataModels.AppProperties.RepostioryPath = Repository;
+                }
+                else
+                {
+                    MessageBox.Show("No repository directory was selected.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating backup directory: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        
+
+
+        }//end private void CreateRepository
 
         // Helper method to create a file if it doesn't exist
         private void CreateFileIfNotExists(string filePath)

@@ -17,6 +17,12 @@ namespace NewFBP.DataModels
         // Integers = #region Integers
         // Lists = #region Lists
 
+        #region bools
+
+        public static bool FirstRun { get; set; } = false;
+
+        #endregion bools
+
         #region arrays
         /*
          ShortdDirNamesArr is a string array that holds all of the short directory names (the 
@@ -27,6 +33,13 @@ namespace NewFBP.DataModels
         #endregion ShortdDirNamesArr
 
         #region strings
+
+        /*
+         The Repository path holds the path to the repository files
+         */
+        public static string RepostioryPath { get; set; }
+
+
         public static string CurrentSourceName { get; set; }//The name of the directory selected i.e. "Religion"
         /*CurrentSourcePath 
          * /the complete path to the directory selected for backup 
