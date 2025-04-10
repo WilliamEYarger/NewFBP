@@ -284,12 +284,12 @@ Branch 7 Logic
     folders. The Repository folder might be something like D:\\Backups. This directory
     might then hold various differnt backup folders like D:\\Backups\\Religion\\
     Each individual backup folder will hold a series of text files
-        B26FileNamesList  DONE
-        CurrentCntrValues DONE
-        DirIDNamesDict    DONE
-        FileFetchDict     DONE
-        FileLengthDict   DONE
-        FileVersionDict  DONE
+        B26FileNamesList    DONE
+        CurrentCntrValues   DONE
+        DirIDNamesDict      DONE
+        FileFetchDict       DONE
+        FileLengthDict      DONE
+        FileVersionDict     DONE
              It will also have a single subdirectory FileVersions
              The FileVersions  folder will hold copies of all version
              of all source files beginning with version '0' They will 
@@ -317,3 +317,9 @@ Branch 7 Logic
 commit Message commit after Branch 7. merged into master
 202504080903 created new branh 8.SaveRenamedFiles from master
 initial commit  8.SaveRenamedFiles from master
+20250409 Working on 8.SaveRenamedFiles
+    a new class SaveFiles is created, 
+    it gets all of the text files in the SourceBackup folder as 'current' files
+    Create a general private method in SaveFiles to write a file to the repositoyr
+20250410 commit 8.SaveRenamedFiles
+Successfully created a repository and saved both the text files as well as the renamed files there

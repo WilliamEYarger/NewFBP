@@ -114,8 +114,27 @@ namespace NewFBP.HelperClasses
             // create FileFetchDict
             CreateFileFetchDict();
 
+            HelperClasses.FileIOClass.SaveTextFilesToRepository();
 
-            string STOPHERE = "";
+            /*At this point it is time to save the actual renamed files 
+             * but the method depends on whether this is the FirstRun or not
+             * */
+
+            if(DataModels.AppProperties.FirstRun)
+            {
+                // this is the first time the program has been run so save the 0 version of all files
+                HelperClasses.FileIOClass.Save0VersionOfFiles();
+
+            }//end  first fun
+            else // this is not the first run  so compare the FileLengthDict.txt of the SourceBackup to the Repository Backup
+            {
+
+            }
+
+
+
+
+
 
         }// end ProcdessSourceFiles
 
@@ -177,7 +196,7 @@ namespace NewFBP.HelperClasses
 
             string stophere = "";
 
-
+            /**/
 
 
 

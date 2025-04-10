@@ -55,8 +55,8 @@ namespace NewFBP
 
                 /*The SourceRootDirectory is the string up to, but not including the SourceName
                  * When the Dictionary of Directory names is created it will be used
-                 * so that the properties of a directorr in the source can be compared to 
-                 * a directory in the storage site.
+                 * so that the properties of a directory in the source can be compared to 
+                 * a directory in the repository site.
                  * For example if the source directory path is "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion"
                  * and I want to compare it to the directory whose path is "D:\\ReligionBackup\\DirIDNamesDict\\Religion" 
                  * they can only be compared if I strip off the roots.
@@ -89,33 +89,32 @@ namespace NewFBP
                  */
                 string sourceBackupDirPath = sourceRootDirectory+SourceName + "Backup"+'\\';
 
-                // Check if the directory exists
-                if (!Directory.Exists(sourceBackupDirPath))
-                {
-
-                    /*
-                     If the source directory doesn't exist then this is the First run so set
-                    that to true and ask the user to select the path to the Repositoyr
-                     */
-
+                //Use the existence of the FileFetchDict text file as an indicatory of whether this is the FirstRun or not
+                string testFile = sourceBackupDirPath + "FileFetchDict.txt";
+                if (!File.Exists(testFile))
                     DataModels.AppProperties.FirstRun = true;
+                else DataModels.AppProperties.FirstRun = false;
 
+                //Determine if this is the first run
+                if (DataModels.AppProperties.FirstRun)
+                {
 
                     //Set up the button to select the Repositoyr
                     SelectFolderButton.Content = $"Select the Drive and/or folder that will hold Repository";
 
-                    //create a method to select the repository site
+                    //This method gives access to the Repository site. If it doesn't exits it creats it
                     CreateRepository(SourceName);
 
 
-                    // Create the directory if it does not exist
+                    // Create the local Source Backup to hold the text files if it does not exist
                     Directory.CreateDirectory(sourceBackupDirPath);
 
                     // save the name of the backup folder
                     DataModels.AppProperties.SourceBackupDirPath = sourceBackupDirPath;
                     HelperClasses.FileIOClass.sourceBackupDirPath = sourceBackupDirPath ;
-                }                else
-                { // Get all of the old files
+                } // end this is the first run              
+                else // this is not the first run
+                { // Get all of the old files from the disk
 
 
                     // save the name of the backup folder
@@ -327,18 +326,38 @@ namespace NewFBP
                          */
 
                     }// end if file Exists sourceBackupDirPath + '.' + "CurrentCntrValues.txt"
+
                 }// end if (!Directory.Exists(sourceBackupDirPath))
                               
 
                 GetfileNamesAndPaths.ProcessSourceFiles();
+
+                /*
+                CALL  CLASS TO SAVE FILES
+                 */
+                HelperClasses.SaveFiles.SaveAllFiles();
+
+
+
             }// end show dialog
 
         }// end  private void SelectFolderButton_Click
 
+        /*
+         This method received the SourceName and creates a repository in a drive/directory 
+        selected by the user. 
+        The name of the repository is the same as the Source.
+        for example if the Source in C:\Users\Owner\OneDrive\Documents\Learning\Religion
+        and there is a directory called 'Backups' on the D Drive which is where the
+        repository will be placed its path might be
+        D:\Backups\Religion. All the the needed text files created during the run of the
+        program will be stored in this repository after allupdates have been made as a result
+        of addition, deletion or change of various files.
 
+        The file versions of all of the files will be stored in a subDirectory called "FileVersions\\"
+         */
         private void CreateRepository(string SourceName)
         {
-
             try
             {
                 // Prompt the user to select the storage directory
@@ -350,17 +369,20 @@ namespace NewFBP
 
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    string Repository  = Path.Combine(dialog.FileName, SourceName );
+                    string RepositoryPath  = Path.Combine(dialog.FileName, SourceName );
 
-                    if (!Directory.Exists(Repository))
+                    //send this repository path to the global properties
+                    DataModels.AppProperties.RepostioryPath = RepositoryPath;
+
+                    if (!Directory.Exists(RepositoryPath))
                     {
-                        Directory.CreateDirectory(Repository);
-                        string fileVersions = Path.Combine(Repository, "FileVersions\\");
+                        Directory.CreateDirectory(RepositoryPath);
+                        string fileVersions = Path.Combine(RepositoryPath, "FileVersions\\");
                         Directory.CreateDirectory(fileVersions);
                         //MessageBox.Show($"Backup directory created: {backupDirectory}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
 
-                    DataModels.AppProperties.RepostioryPath = Repository;
+                   
                 }
                 else
                 {
