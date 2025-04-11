@@ -322,4 +322,6 @@ initial commit  8.SaveRenamedFiles from master
     it gets all of the text files in the SourceBackup folder as 'current' files
     Create a general private method in SaveFiles to write a file to the repositoyr
 20250410 commit 8.SaveRenamedFiles
-Successfully created a repository and saved both the text files as well as the renamed files there
+20250411  had errors in branch 8 which I discarded and recalled the previous working version of 
+branch 8
+committ message Restored branch 8 from gitHub
