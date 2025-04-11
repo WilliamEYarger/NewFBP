@@ -325,3 +325,5 @@ initial commit  8.SaveRenamedFiles from master
 20250411  had errors in branch 8 which I discarded and recalled the previous working version of 
 branch 8
 committ message Restored branch 8 from gitHub
+Commt message for master after merge with branch 8
+commited after merge with Branch 8
