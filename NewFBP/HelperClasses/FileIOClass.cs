@@ -155,9 +155,25 @@ namespace NewFBP.HelperClasses
 
         public static void Save0VersionOfFiles()
         {
-             
+            //CHANGES 20250412
+            //Get the DirIDNamesDict and use it to list all of the directories found to the LogOfDirsAndFilesList
+            Dictionary<string, string>  currnetDirIDNamesDict = DataModels.AppProperties.DirIDNamesDict;
 
-            //Get the FileFetchDict and convert it into a '~' delimited string array
+            //Write out today's date
+
+            string dirOutputStr = "Initial backup on " + DateTime.Now.ToString();
+            DataModels.AppProperties.LogOfDirsAndFilesList.Add(dirOutputStr);
+
+            foreach (KeyValuePair<string, string> kvp in currnetDirIDNamesDict)
+            {
+                dirOutputStr = kvp.Key + " directory's ID is " + kvp.Value;
+                DataModels.AppProperties.LogOfDirsAndFilesList.Add(dirOutputStr);
+
+            }//end foreach(KeyValuePair<string,string> kvp in currnetDirIDNamesDict)
+
+            //END CHANGES 20250412
+
+            //Get the current FileFetchDict and convert it into a '~' delimited string array
             Dictionary<string, string> currentFileFetchDict = DataModels.AppProperties.FileFetchDict;
             string[] currentFileFetchDictArr = new string[currentFileFetchDict.Count];
             foreach (KeyValuePair<string, string> kvp in currentFileFetchDict)
@@ -168,6 +184,12 @@ namespace NewFBP.HelperClasses
 
                 //Get the new repository version name for this file
                 string newRepostionyName = GetFileVersionName(combinedFFDKVP);
+
+                //CHANGES 20250412
+                string logOutputStr = fullPath + " is saved as " + newRepostionyName;
+                DataModels.AppProperties.LogOfDirsAndFilesList.Add(logOutputStr);
+
+                //END CHANGES 20250412
                 string repositoryPath = currentRepostioryPath + "\\FileVersions\\" + newRepostionyName;
                 try
                 {
@@ -179,7 +201,23 @@ namespace NewFBP.HelperClasses
                     MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
+
             } //end foreach (KeyValuePair<string, string> kvp in currentFileFetchDict
+
+            //CHANGES 20250412
+            //write LogOfDirsAndFilesList to repository
+
+            // convert LogOfDirsAndFilesList to and array of string
+            string [] LogOfDirsAndFilesListArr = DataModels.AppProperties.LogOfDirsAndFilesList.ToArray();
+            string currentLogRepostioryPath = currentRepostioryPath + "\\LogOfDirsAndFiles.txt";
+            File.WriteAllLines(currentLogRepostioryPath, LogOfDirsAndFilesListArr);
+            
+
+            //END CHANGES 20250412
+
+
+
+
 
         }// end public static void Save0VersionOfFiles()
         private static string GetFileVersionName(string FileFetchKVP)//‘~’ delimited KeyValue Pair

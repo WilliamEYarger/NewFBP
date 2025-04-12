@@ -124,8 +124,8 @@ namespace NewFBP.HelperClasses
             {
                 // this is the first time the program has been run so save the 0 version of all files
                 HelperClasses.FileIOClass.Save0VersionOfFiles();
-
-            }//end  first fun
+                Environment.Exit(0);
+            }//end  first Run
             else // this is not the first run  so compare the FileLengthDict.txt of the SourceBackup to the Repository Backup
             {
 
