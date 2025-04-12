@@ -155,7 +155,7 @@ namespace NewFBP.HelperClasses
 
         public static void Save0VersionOfFiles()
         {
-            //CHANGES 20250412
+            
             //Get the DirIDNamesDict and use it to list all of the directories found to the LogOfDirsAndFilesList
             Dictionary<string, string>  currnetDirIDNamesDict = DataModels.AppProperties.DirIDNamesDict;
 
@@ -171,7 +171,7 @@ namespace NewFBP.HelperClasses
 
             }//end foreach(KeyValuePair<string,string> kvp in currnetDirIDNamesDict)
 
-            //END CHANGES 20250412
+            
 
             //Get the current FileFetchDict and convert it into a '~' delimited string array
             Dictionary<string, string> currentFileFetchDict = DataModels.AppProperties.FileFetchDict;
@@ -185,11 +185,11 @@ namespace NewFBP.HelperClasses
                 //Get the new repository version name for this file
                 string newRepostionyName = GetFileVersionName(combinedFFDKVP);
 
-                //CHANGES 20250412
+                
                 string logOutputStr = fullPath + " is saved as " + newRepostionyName;
                 DataModels.AppProperties.LogOfDirsAndFilesList.Add(logOutputStr);
 
-                //END CHANGES 20250412
+                
                 string repositoryPath = currentRepostioryPath + "\\FileVersions\\" + newRepostionyName;
                 try
                 {
@@ -204,7 +204,7 @@ namespace NewFBP.HelperClasses
 
             } //end foreach (KeyValuePair<string, string> kvp in currentFileFetchDict
 
-            //CHANGES 20250412
+            
             //write LogOfDirsAndFilesList to repository
 
             // convert LogOfDirsAndFilesList to and array of string
@@ -213,7 +213,7 @@ namespace NewFBP.HelperClasses
             File.WriteAllLines(currentLogRepostioryPath, LogOfDirsAndFilesListArr);
             
 
-            //END CHANGES 20250412
+
 
 
 

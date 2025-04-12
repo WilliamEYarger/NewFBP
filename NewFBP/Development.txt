@@ -330,3 +330,5 @@ commited after merge with Branch 8
 Branch 9 commit message
 successfully added methods to create a log of all directories and files saved during the initial run on 
 4/12/2025
+Commite message of final version of 9.
+Removed all comments related to changes on 4/12/2025

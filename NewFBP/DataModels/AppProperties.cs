@@ -144,12 +144,12 @@ namespace NewFBP.DataModels
 
         #region Lists
 
-        //CHANGES 20250412
+        
         //Create a new List<string> LogOfDirsAndFilesList in AppProperties
 
         public static List<string> LogOfDirsAndFilesList { get; set; } = new List<string>();
 
-        //END CHANGES 20250412
+       
 
         //creat a list that holds B26FileNamesList
         public static List<string> B26FileNamesList { get; set; }
