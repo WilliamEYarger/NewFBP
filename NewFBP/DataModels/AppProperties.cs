@@ -73,12 +73,12 @@ namespace NewFBP.DataModels
         public static string  RootDirectory { get; set; }
 
         /* the SourceBackupDirPath is to path the folder where the source backup data will be store
-         * it includes the terminal \\
+         * it includes the terminal \\ its composition is source directory name +Backup+\\
          * 
          */
         public static string  SourceBackupDirPath { get; set; }
 
-
+        public static string LocalBackupPath { get; set; }
         #endregion strings
 
         /*CurrentCntrValues
@@ -86,7 +86,11 @@ namespace NewFBP.DataModels
          */
         public static string CurrentCntrValues { get; set; }
 
+        /*Create a property to hold the path to the repository Log file
+         * 
+         */
 
+        public static string RepositoryLogFilePath { get; set; }
         #region Dictionaries
 
         //Religion\,0

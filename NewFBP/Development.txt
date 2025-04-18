@@ -334,3 +334,12 @@ Commite message of final version of 9.
 Removed all comments related to changes on 4/12/2025
 202504121038 merged Branch 9 into master
 202504231014 Created new branch from master 10.ProcessMewAndChangedFiles
+202504170603 versions
+    Task 1 Set FirstRun bool to true DONE DONE
+    Task 2 In FileIOClass create a method to write a single line of text to the LogFile DONE
+    Task 3 write  if FirstRun append "This is the first run of the backup of " + DataModels.AppPropertics.CurrentSourceName + " on " +  + DateTime.Now.ToString(); DONE
+
+    202504180730 commit message
+    Succesfully setup all folders and files in both the local backup folder and the repository and have
+    written a line to the RepositoryLogfile saying 
+    "This is the first run of the backup program created on 4/18/2025 7:11:29 AM" 

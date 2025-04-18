@@ -128,6 +128,7 @@ namespace NewFBP.HelperClasses
             }//end  first Run
             else // this is not the first run  so compare the FileLengthDict.txt of the SourceBackup to the Repository Backup
             {
+           
 
             }
 
@@ -208,7 +209,6 @@ namespace NewFBP.HelperClasses
         private static void CreateB26NameListAndFileLengthDict()
         {
 
-
             //SET local variables to Global properties if they exist and if not set booleans
             //create a local currentFileCntr  DILE CNTR IS NOT SET
             int currentFileCntr = DataModels.AppProperties.FileCntr;
@@ -273,7 +273,7 @@ namespace NewFBP.HelperClasses
             */
             for (int i = 0; i < currentListOfAllFilePathsArr.Length; i++)
             {
-                currntFilePath = currentListOfAllFilePathsArr[i];//"C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion\\Articles List.docx"
+                currntFilePath = currentListOfAllFilePathsArr[i];//"C:\\Users\\Owner\\OneDrive\\Documents\\0TestFolder\\Dir1\\0.jpg"
 
                 shortDirName = currntFilePath.Replace(root, "");
 
@@ -306,11 +306,12 @@ namespace NewFBP.HelperClasses
                     long fileLength = fileInfo.Length;
                     currentFileLengthDict.Add(currentB26FileName, fileLength.ToString());
 
-                    if (currentDirIDNamesDict.ContainsKey(shortDirName))
+                    //ERROR ERROR 20250415 THE FOLLOWING SHOULDNEGATED
+                    if (!currentDirIDNamesDict.ContainsKey(shortDirName))
                     {
                         dirIntName = currentDirIDNamesDict[shortDirName];//"0"
 
-                        //I need to change fileInfoKey to fileVersionDictKey 
+                        
                         fileVersionDictKey = currentFileName;// "0.Articles List.docx"
 
                         currentFileVersionDict.Add(fileVersionDictKey, "0");

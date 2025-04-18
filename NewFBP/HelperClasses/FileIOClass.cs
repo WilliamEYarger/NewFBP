@@ -6,6 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
+
+/* 
+//LOCAL VARIABLES
+//LOCAL PROPERTIES
+//METHODS
+    public static void saveDicrionary( Dictionary<string,string> newDictionary, string dictName)
+    public static void SaveList(List<string> newList, string outputListName)
+    public static void WriteString(string currentStr, string stringName)
+    public static void SaveTextFilesToRepository()
+    private static void SaveTextFilesToRepository(string source, string destination)
+    public static void Save0VersionOfFiles()
+    private static string GetFileVersionName(string FileFetchKVP)//‘~’ delimited KeyValue Pair
+ */
 namespace NewFBP.HelperClasses
 {
     public static class FileIOClass
@@ -23,10 +36,14 @@ namespace NewFBP.HelperClasses
         //private static Dictionary<string,string> currentDirIDNamesDict = DataModels.AppProperties.DirIDNamesDict;
         //private static Dictionary<string,string> currentFileVersionDict = DataModels.AppProperties.FileVersionDict;
 
+
+        //LOCAL PROPERTIES
         //Create a local value for the path to the local disk backup folder
+        //"C:\\Users\\Owner\\OneDrive\\Documents\\0TestFolderBackup\\"
         public static string sourceBackupDirPath { get; set; }
 
        
+        //METHODS
         public static void saveDicrionary( Dictionary<string,string> newDictionary, string dictName)
         {
             Dictionary<string, string> currentDictionary = newDictionary;
@@ -210,9 +227,31 @@ namespace NewFBP.HelperClasses
             // convert LogOfDirsAndFilesList to and array of string
             string [] LogOfDirsAndFilesListArr = DataModels.AppProperties.LogOfDirsAndFilesList.ToArray();
             string currentLogRepostioryPath = currentRepostioryPath + "\\LogOfDirsAndFiles.txt";
+
+            //20250414 begin
+            DataModels.AppProperties.RepositoryLogFilePath = currentLogRepostioryPath;
+            WriteString(currentLogRepostioryPath, "PathToRepositoryLogFile");
+
+            /*
+              public static void WriteString(string currentStr, string stringName)
+        {
+            string outputFilePath = sourceBackupDirPath + stringName + ".txt";
+
+            File.WriteAllText(outputFilePath, currentStr);
+            //string stophere = "";
+
+        }
+             */
+            //1120250424 end
+
+
             File.WriteAllLines(currentLogRepostioryPath, LogOfDirsAndFilesListArr);
+
+
+            //CHANGES 20250414
             
 
+            //END CHANGES 20250414
 
 
 
@@ -220,6 +259,8 @@ namespace NewFBP.HelperClasses
 
 
         }// end public static void Save0VersionOfFiles()
+
+
         private static string GetFileVersionName(string FileFetchKVP)//‘~’ delimited KeyValue Pair
         {
             Dictionary<string, string> currentDirIDNamesDict = DataModels.AppProperties.DirIDNamesDict;
@@ -243,6 +284,58 @@ namespace NewFBP.HelperClasses
         }//end private static string GetFileVersionName
 
 
+        //20250417 START
+
+        public static void WriteALineToTheLogFile(string line)
+        {
+
+            try
+            {
+                // Construct the path to the log file
+                string pathToFileHoldingLogFilePath = Path.Combine(DataModels.AppProperties.LocalBackupPath, "PathToRepositoryLogFile.txt");
+
+                //get the text in the logfilePath and use it as the path to the log file
+
+               string[] logFilePathArr = File.ReadAllLines(pathToFileHoldingLogFilePath);
+                string logFilePath = logFilePathArr[0];
+                // Append the provided line to the file
+                using (StreamWriter writer = new StreamWriter(logFilePath, true))
+                {
+                    writer.WriteLine(line);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(($"Error writing to log file: {ex.Message}"));
+            }//end try catch
+
+        }//end public static void WriteALineToTheLogFile(string line
+
+
+
+        //public static void WriteALineToTheLogFile(string line)
+        //{
+        //    try
+        //    {
+        //        // Construct the path to the log file
+        //        string logFilePath = Path.Combine(DataModels.AppProperties.LocalBackupPath, "PathToRepositoryLogFile.txt");
+
+            //        // Append the provided line to the file
+            //        using (StreamWriter writer = new StreamWriter(logFilePath, true))
+            //        {
+            //            writer.WriteLine(line);
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show(($"Error writing to log file: {ex.Message}");
+            //    }//end try catch
+
+
+            //}// end public static void WriteALineToTheLogFile
+
+
+            //20250417 END
 
 
 
@@ -260,7 +353,6 @@ namespace NewFBP.HelperClasses
 
 
 
-
-    //DO NOT GO PAST HERE
-}//end public static class FileIOClass
+            //DO NOT GO PAST HERE
+    }//end public static class FileIOClass
 }//end namespace NewFBP.HelperClasses

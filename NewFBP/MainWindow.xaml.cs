@@ -49,6 +49,26 @@ namespace NewFBP
                 //"C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion
                 string sourcePath = dialog.FileName;
 
+
+                
+
+                HelperClasses.CreateAndRetrieveSourceTextFiles.SourceFolderPath = sourcePath;
+
+                //Returns here after either setting up initial folder and file structure when FirstRun is true
+                //Or immediately after setting FirstRun = false
+
+                if(DataModels.AppProperties.FirstRun)
+                {
+                    //This is the first run
+                    // Write a message to the Log file saying this is the initial backup and the date it was creates
+                    string logFileMessage = "This is the first run of the backup program created on " + DateTime.Now.ToString();
+                    HelperClasses.FileIOClass.WriteALineToTheLogFile(logFileMessage);
+                }
+                else
+                {
+                    //This is not the first run
+                }
+
                 // Store the selected folder name in the Dependency Property
                 //"Religion"
                 SourceName = new DirectoryInfo(dialog.FileName).Name;
@@ -62,15 +82,15 @@ namespace NewFBP
                  * they can only be compared if I strip off the roots.
                  * For the Religion source the sourceRootDirectory is "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\"
                  */
-                string sourceRootDirectory = sourcePath.Replace(SourceName, "");
-                 DataModels.AppProperties.RootDirectory = sourceRootDirectory;
+                string sourceRootDirectory = sourcePath.Replace(SourceName, "");//"C:\\Users\\Owner\\OneDrive\\Documents\\"
+                DataModels.AppProperties.RootDirectory = sourceRootDirectory;
 
                 // Store the complete path to the source directory 
                 //ie "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\Religion"
-                DataModels.AppProperties.CurrentSourcePath = sourcePath;
+                DataModels.AppProperties.CurrentSourcePath = sourcePath;//"C:\\Users\\Owner\\OneDrive\\Documents\\0TestFolder"
 
                 //store the Name of the current source directory "Religion"
-                DataModels.AppProperties.CurrentSourceName = SourceName;
+                DataModels.AppProperties.CurrentSourceName = SourceName;//"0TestFolder"
 
                 // Create the root directory name from SourceName+'\\' ="Religion\\"
                 string currentSourceName = SourceName + '\\';
@@ -89,6 +109,8 @@ namespace NewFBP
                  */
                 string sourceBackupDirPath = sourceRootDirectory+SourceName + "Backup"+'\\';
 
+                DataModels.AppProperties.LocalBackupPath = sourceBackupDirPath;//"C:\\Users\\Owner\\OneDrive\\Documents\\0TestFolderBackup\\"
+
                 //Use the existence of the FileFetchDict text file as an indicatory of whether this is the FirstRun or not
                 string testFile = sourceBackupDirPath + "FileFetchDict.txt";
                 if (!File.Exists(testFile))
@@ -101,6 +123,21 @@ namespace NewFBP
 
                     //Set up the button to select the Repositoyr
                     SelectFolderButton.Content = $"Select the Drive and/or folder that will hold Repository";
+
+                    ////CHANGES 20250413
+                    //// Create the local Source Backup to hold the text files if it does not exist
+                    //try
+                    //{
+                    //    if(!Directory.Exists(sourceBackupDirPath))
+                    //    { Directory.CreateDirectory(sourceBackupDirPath); }
+                    //    Directory.CreateDirectory(sourceBackupDirPath);
+                    //}
+
+                    //catch (Exception ex) 
+                    //{
+                    //    MessageBox.Show("Filed because of exception " + ex.Message);
+                    //}
+                    ////END CHANGES 20250413
 
                     //This method gives access to the Repository site. If it doesn't exits it creats it
                     CreateRepository(SourceName);
@@ -127,7 +164,7 @@ namespace NewFBP
                     string filePath = sourceBackupDirPath  + "CurrentCntrValues.txt";
 
                     string[] currentCntrValues;
-                    if (File.Exists(filePath))
+                    if (File.Exists(filePath))//"C:\\Users\\Owner\\OneDrive\\Documents\\0TestFolderBackup\\CurrentCntrValues.txt"
                     {
                         currentCntrValues = File.ReadAllLines(filePath);
                         string delimitedString = currentCntrValues[0];
@@ -172,7 +209,7 @@ namespace NewFBP
                             */
                         // get the FileFetchDict path
                         // "C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\ReligionBackup\\FileFetchDict.txt"
-                        filePath = sourceBackupDirPath + "FileFetchDict.txt";
+                        filePath = sourceBackupDirPath + "FileFetchDict.txt";//C:\\Users\\Owner\\OneDrive\\Documents\\0TestFolderBackup\\FileFetchDict.txt"
 
                         //create a string array to hold the lines of the "CurrentDirNamesDict.txt file
                         string[] FileFetchDictArr;
@@ -203,7 +240,7 @@ namespace NewFBP
                          */
 
                         //"C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\ReligionBackup\\FileLengthDict .txt"
-                        filePath = sourceBackupDirPath   + "FileLengthDict .txt";
+                        filePath = sourceBackupDirPath   + "FileLengthDict.txt";
 
                         //create a string array to hold the lines of the currentFileLengthDictArr
                         string[] currentFileLengthDictArr;
@@ -222,7 +259,9 @@ namespace NewFBP
                          */
                         // see if filePath file exists and if it does get it else create a new currentFileNamesDict
                         //"C:\\Users\\Owner\\OneDrive\\Documents\\Learning\\ReligionBackup\\FileLengthDict .txt"
-                        if (File.Exists(filePath))
+
+                        //C:\Users\Owner\OneDrive\Documents\0TestFolderBackup\FileLengthDict.txt
+                        if (File.Exists(filePath))//"C:\\Users\\Owner\\OneDrive\\Documents\\0TestFolderBackup\\FileLengthDict .txt"
                         {
                             currentFileLengthDictArr = File.ReadAllLines(filePath);
 
@@ -287,7 +326,7 @@ namespace NewFBP
                         Dictionary<string, string> currentDirIDNamesDict = new Dictionary<string, string>();
 
                         // see if filePath file exists and if it does get it else create a new OldCurrentVersionDict
-                        if (File.Exists(filePath))
+                        if (File.Exists(filePath))//"C:\\Users\\Owner\\OneDrive\\Documents\\0TestFolderBackup\\DirIDNamesDict.txt"
                         {
                             currentDirIDNamesDictArr = File.ReadAllLines(filePath);
 
@@ -307,7 +346,7 @@ namespace NewFBP
                         filePath = sourceBackupDirPath   + "B26FileNamesList.txt";
 
                         // if file exists read it ito array
-                        if (File.Exists(filePath))
+                        if (File.Exists(filePath))//"C:\\Users\\Owner\\OneDrive\\Documents\\0TestFolderBackup\\B26FileNamesList.txt"
                         {
                             string[] B26FileNamesArr =  File.ReadAllLines(filePath);
 
@@ -327,8 +366,24 @@ namespace NewFBP
 
                     }// end if file Exists sourceBackupDirPath + '.' + "CurrentCntrValues.txt"
 
+
+                    //20250415 start
+                    // get PathToRepositoryLogFile.txt
+                     filePath = sourceBackupDirPath + "PathToRepositoryLogFile.txt";
+
+                    //read the path to the repository log file into DataModel.AppProperties.RepositoryLogFilePath
+
+                    if (File.Exists(filePath))
+                    {
+                        DataModels.AppProperties.RepositoryLogFilePath = File.ReadAllText(filePath).Trim();
+                    }
+
+                    //20250415 end
+
+
                 }// end if (!Directory.Exists(sourceBackupDirPath))
-                              
+
+
 
                 GetfileNamesAndPaths.ProcessSourceFiles();
 
@@ -371,6 +426,25 @@ namespace NewFBP
                 {
                     string RepositoryPath  = Path.Combine(dialog.FileName, SourceName );
 
+                    ////CHANGES 20250413
+
+                    //string pathToLogfile = RepositoryPath + "\\LogOfDirsAndFiles.txt";//"C:\\Tempfiles\\Backups\\0TestFolder\\LogOfDirsAndFiles.txt"
+                    //string pathToFileVersions = RepositoryPath + "\\FileVersions\\";//"C:\\Tempfiles\\Backups\\0TestFolder\\FileVersions\\"
+                    //string RepositoryPaths = pathToLogfile + '~' + pathToFileVersions;//C:\\Tempfiles\\Backups\\0TestFolder\\LogOfDirsAndFiles.txt~C:\\Tempfiles\\Backups\\0TestFolder\\FileVersions\\"
+                    ////ERROR ERROR THIS BACKUP DIRCTORY HAS NOT BEEN CREATED YET
+                    //string pathToLocalBackup = DataModels.AppProperties.LocalBackupPath;
+                    //try
+                    //{
+                    //    File.WriteAllText(pathToLocalBackup, RepositoryPaths);
+                    //}
+                    //catch (Exception Ex)
+                    //{
+                    //    MessageBox.Show("Failed because of exception " + Ex.Message);
+                    //}
+                   
+
+                    ////END CHANGES 20250413
+
                     //send this repository path to the global properties
                     DataModels.AppProperties.RepostioryPath = RepositoryPath;
 
@@ -397,6 +471,8 @@ namespace NewFBP
 
 
         }//end private void CreateRepository
+
+       
 
         // Helper method to create a file if it doesn't exist
         private void CreateFileIfNotExists(string filePath)
